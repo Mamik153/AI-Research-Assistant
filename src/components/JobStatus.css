@@ -1,0 +1,340 @@
+/* JobStatus Component Styles */
+.job-status {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border-left: 4px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.job-status__header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.job-status__icon-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    flex-shrink: 0;
+}
+
+.job-status__icon {
+    font-size: 1.5rem;
+    z-index: 2;
+}
+
+.job-status__spinner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.job-status__spinner-circle {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 3px solid #e5e7eb;
+    border-top: 3px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.job-status__title-container {
+    flex: 1;
+}
+
+.job-status__title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+    color: #111827;
+}
+
+.job-status__timestamp {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.job-status__content {
+    margin-bottom: 1rem;
+}
+
+.job-status__message {
+    font-size: 1rem;
+    color: #374151;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.job-status__details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.job-status__job-id {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.job-status__label {
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.job-status__code {
+    background: #f3f4f6;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    color: #374151;
+}
+
+.job-status__progress {
+    margin-top: 1rem;
+}
+
+.job-status__progress-bar {
+    width: 100%;
+    height: 0.5rem;
+    background: #e5e7eb;
+    border-radius: 0.25rem;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.job-status__progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+    border-radius: 0.25rem;
+    animation: progress 2s ease-in-out infinite;
+}
+
+@keyframes progress {
+    0% { width: 0%; }
+    50% { width: 70%; }
+    100% { width: 100%; }
+}
+
+.job-status__progress-text {
+    font-size: 0.875rem;
+    color: #6b7280;
+    text-align: center;
+    font-style: italic;
+}
+
+/* Status-specific styles */
+.job-status--submitting {
+    border-left-color: #f59e0b;
+    background: linear-gradient(135deg, #fef3c7 0%, #ffffff 100%);
+}
+
+.job-status--submitting .job-status__spinner-circle {
+    border-top-color: #f59e0b;
+}
+
+.job-status--pending {
+    border-left-color: #6366f1;
+    background: linear-gradient(135deg, #e0e7ff 0%, #ffffff 100%);
+}
+
+.job-status--pending .job-status__spinner-circle {
+    border-top-color: #6366f1;
+}
+
+.job-status--running {
+    border-left-color: #059669;
+    background: linear-gradient(135deg, #d1fae5 0%, #ffffff 100%);
+}
+
+.job-status--running .job-status__spinner-circle {
+    border-top-color: #059669;
+}
+
+.job-status--running .job-status__progress-fill {
+    background: linear-gradient(90deg, #059669, #047857);
+}
+
+.job-status--completed {
+    border-left-color: #10b981;
+    background: linear-gradient(135deg, #d1fae5 0%, #ffffff 100%);
+}
+
+.job-status--failed {
+    border-left-color: #ef4444;
+    background: linear-gradient(135deg, #fee2e2 0%, #ffffff 100%);
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+    .job-status {
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .job-status__header {
+        gap: 0.75rem;
+    }
+    
+    .job-status__icon-container {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+    
+    .job-status__spinner-circle {
+        width: 2rem;
+        height: 2rem;
+    }
+    
+    .job-status__title {
+        font-size: 1.125rem;
+    }
+    
+    .job-status__details {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    .job-status__spinner-circle,
+    .job-status__progress-fill {
+        animation: none;
+    }
+    
+    .job-status--running .job-status__progress-fill {
+        width: 70%;
+    }
+
+}
+/* Error handling styles */
+.job-status__error {
+    margin-top: 1rem;
+    padding: 1.5rem;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 0.5rem;
+    border-left: 4px solid #ef4444;
+}
+
+.job-status__error-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.job-status__error-icon {
+    font-size: 1.25rem;
+}
+
+.job-status__error-title {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #991b1b;
+}
+
+.job-status__error-message {
+    color: #7f1d1d;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.job-status__error-help {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.job-status__error-help-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #0c4a6e;
+    margin-bottom: 0.5rem;
+}
+
+.job-status__error-help-content {
+    color: #0f172a;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.job-status__error-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.job-status__retry-btn {
+    padding: 0.5rem 1rem;
+    background: #dc2626;
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.job-status__retry-btn:hover {
+    background: #b91c1c;
+}
+
+.job-status__retry-btn:focus-visible {
+    outline: 2px solid #dc2626;
+    outline-offset: 2px;
+}
+
+/* Enhanced failed status styling */
+.job-status--failed {
+    border-left-color: #ef4444;
+    background: linear-gradient(135deg, #fee2e2 0%, #ffffff 100%);
+}
+
+.job-status--failed .job-status__message {
+    color: #7f1d1d;
+    font-weight: 500;
+}
+
+/* Responsive error styles */
+@media (max-width: 640px) {
+    .job-status__error {
+        padding: 1rem;
+    }
+    
+    .job-status__error-help {
+        padding: 0.75rem;
+    }
+    
+    .job-status__retry-btn {
+        width: 100%;
+        padding: 0.75rem 1rem;
+    }
+}
