@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 import { ResearchForm } from './ResearchForm';
-import { ResearchStatusContainer } from './ResearchStatusContainer';
 import type { UseResearchJobReturn } from '../types/research';
 import './ResearchFormContainer.css';
 
@@ -10,7 +9,7 @@ interface ResearchFormContainerProps {
     error: UseResearchJobReturn['error'];
     currentJob: UseResearchJobReturn['currentJob'];
     result: UseResearchJobReturn['result'];
-    resetJob: UseResearchJobReturn['resetJob'];
+    resetJob?: UseResearchJobReturn['resetJob'];
 }
 
 /**
@@ -23,7 +22,6 @@ export const ResearchFormContainer = ({
     error,
     currentJob,
     result,
-    resetJob
 }: ResearchFormContainerProps) => {
 
     // Handle form submission
