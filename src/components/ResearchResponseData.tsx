@@ -17,13 +17,9 @@ const ResearchResponseData = ({ isVisible, currentJob, result, resetJob }: Resea
     }
     
     return (
-        <div className={`
-            h-full w-full relative text-white
-            transition-all duration-500 ease-in-out
-            ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}
-        `}>
+        <div className="w-full relative text-white">
             {currentJob && (
-                <div className="space-y-6">
+                <div className="space-y-4">
                     <JobStatus 
                         jobId={currentJob.jobId}
                         status={currentJob.status}
@@ -41,9 +37,9 @@ const ResearchResponseData = ({ isVisible, currentJob, result, resetJob }: Resea
             )}
             
             {!currentJob && (
-                <div className="flex items-center justify-center h-full">
-                    <p className="text-gray-400 text-lg">
-                        Submit a research topic to see results here
+                <div className="flex items-center justify-center p-4">
+                    <p className="text-gray-400 text-base">
+                        No research data available
                     </p>
                 </div>
             )}

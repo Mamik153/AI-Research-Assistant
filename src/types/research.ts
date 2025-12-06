@@ -81,3 +81,15 @@ export interface ApiError {
 export interface ResearchSubmissionRequest {
   topic: string;
 }
+
+// Chat Interface Types
+export interface ChatMessage {
+  id: string;
+  type: 'user' | 'assistant';
+  content: string; // User's submitted topic
+  timestamp: string; // ISO 8601 format
+  researchJob?: ResearchJob; // Present for assistant messages
+  researchResult?: ResearchResult; // Present when research completes
+}
+
+export type LayoutMode = 'centered' | 'chat';

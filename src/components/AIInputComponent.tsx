@@ -10,6 +10,8 @@ interface AIInputComponentProps {
   onMicClick?: () => void;
   placeholder?: string;
   className?: string;
+  isAtBottom?: boolean;
+  onPositionTransitionComplete?: () => void;
 }
 
 // Type definitions for Web Speech API
@@ -68,6 +70,8 @@ export function AIInputComponent({
   onMicClick,
   placeholder = 'Ask anything...',
   className = '',
+  isAtBottom = false,
+  onPositionTransitionComplete,
 }: AIInputComponentProps) {
   // State management
   const [value, setValue] = useState('');
@@ -81,8 +85,6 @@ export function AIInputComponent({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const baseHeightRef = useRef<number>(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const initialHeightRef = useRef<number | null>(null);
-  const [initialHeight, setInitialHeight] = useState<number | null>(null);
   
   // Ref for speech recognition
   const recognitionRef = useRef<SpeechRecognition | null>(null);
@@ -179,22 +181,6 @@ export function AIInputComponent({
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
-  // Measure initial container height for positioning (only once when mounted)
-  useEffect(() => {
-    if (containerRef.current && initialHeightRef.current === null && isMounted && !value) {
-      // Use double RAF to ensure layout is complete
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          if (containerRef.current && initialHeightRef.current === null) {
-            const height = containerRef.current.offsetHeight;
-            initialHeightRef.current = height;
-            setInitialHeight(height);
-          }
-        });
-      });
-    }
-  }, [isMounted, value]);
 
   // Measure base height on mount
   useEffect(() => {
@@ -339,36 +325,58 @@ export function AIInputComponent({
       }, 300);
     }
   };
-  // Calculate bottom position to center initially, then keep bottom fixed as it grows upward
-  const getBottomPosition = () => {
-    if (!isMounted || initialHeight === null) {
-      return undefined; // Will use fallback transform
+  // Handle position transition complete callback
+  useEffect(() => {
+    if (isAtBottom && onPositionTransitionComplete) {
+      const timer = setTimeout(() => {
+        onPositionTransitionComplete();
+      }, 500); // Match transition duration
+      return () => clearTimeout(timer);
     }
-    // Center initially: bottom at 50% - half of initial height
-    // As height increases, bottom stays at this position, so it grows upward
-    return `calc(50% - ${initialHeight / 2}px)`;
-  };
+  }, [isAtBottom, onPositionTransitionComplete]);
 
-  // Calculate transform for horizontal centering and initial mount animation
-  const getTransform = () => {
+  // Calculate positioning based on isAtBottom prop
+  const getPositionStyles = () => {
     if (!isMounted) {
-      return 'translateX(-50%) translateY(8px)';
+      return {
+        position: 'absolute' as const,
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%, -50%) translateY(8px)',
+        opacity: 0,
+      };
     }
-    // Only translate horizontally to center, vertical positioning handled by bottom
-    return 'translateX(-50%)';
-  };
 
-  const bottomPosition = getBottomPosition();
+    if (isAtBottom) {
+      // Bottom position for chat mode - responsive padding
+      return {
+        position: 'fixed' as const,
+        left: '50%',
+        bottom: '16px',
+        transform: 'translateX(-50%)',
+        transition: 'all 500ms cubic-bezier(0.4, 0, 0.2, 1)',
+      };
+    }
+
+    // Centered position for initial state
+    return {
+      position: 'absolute' as const,
+      left: '50%',
+      top: '50%',
+      transform: 'translate(-50%, -50%)',
+      transition: 'all 500ms cubic-bezier(0.4, 0, 0.2, 1)',
+    };
+  };
 
   return (
     <div
       ref={containerRef}
-      className={`absolute z-10 w-3xl max-w-sm rounded-3xl bg-white shadow-lg transition-all duration-300 ease-in-out ${
+      className={`z-10 w-[90%] sm:w-[80%] md:w-full max-w-sm md:max-w-2xl px-3 sm:px-4 rounded-3xl bg-white shadow-lg ${
         isMounted ? 'opacity-100' : 'opacity-0'
       } ${className}`}
       style={{
-        transform: getTransform(),
-        ...(bottomPosition ? { bottom: bottomPosition } : {}),
+        ...getPositionStyles(),
+        willChange: isAtBottom ? 'auto' : 'transform, opacity'
       }}
     >
       <motion.div 
@@ -412,10 +420,10 @@ export function AIInputComponent({
             ease: 'easeOut'
           }}
         >
-          {/* MicrophoneButton */}
+          {/* MicrophoneButton - min 44x44px for touch */}
           <button
             onClick={handleMicClick}
-            className={`flex size-11 items-center justify-center rounded-full p-1 transition-all duration-200 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+            className={`flex min-w-[44px] min-h-[44px] size-11 items-center justify-center rounded-full p-1 transition-all duration-200 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
               isRecording 
                 ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse' 
                 : 'bg-gray-100 hover:bg-gray-200 text-black'
@@ -429,10 +437,10 @@ export function AIInputComponent({
             <MicrophoneIcon className="w-5 h-5" />
           </button>
 
-          {/* SubmitButton with dark background */}
+          {/* SubmitButton with dark background - min 44x44px for touch */}
           <button
             onClick={handleSubmit}
-            className={`flex size-11 items-center justify-center rounded-full p-1 transition-all duration-200 bg-[#121212] text-white hover:bg-[#2a2a2a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+            className={`flex min-w-[44px] min-h-[44px] size-11 items-center justify-center rounded-full p-1 transition-all duration-200 bg-[#121212] text-white hover:bg-[#2a2a2a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
               isAnimating ? 'scale-90 rotate-90' : 'hover:scale-105 rotate-0'
             }`}
             aria-label="Submit message"
