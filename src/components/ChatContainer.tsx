@@ -2,14 +2,17 @@ import { useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import type { ChatMessage as ChatMessageType } from '../types/research';
 import { ChatMessage } from './ChatMessage';
+import LoadingAnimation from './LoadingAnimation';
 
 interface ChatContainerProps {
   messages: ChatMessageType[];
   isVisible: boolean;
   className?: string;
+  isTransitioning?: boolean;
+  topic?: string;
 }
 
-export function ChatContainer({ messages, isVisible, className = '' }: ChatContainerProps) {
+export function ChatContainer({ messages, isVisible, isTransitioning, className = '', topic }: ChatContainerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -36,12 +39,8 @@ export function ChatContainer({ messages, isVisible, className = '' }: ChatConta
         scrollbarColor: '#cbd5e0 transparent'
       }}
     >
-      {messages.length === 0 ? (
-        <div className="flex items-center justify-center h-full">
-          <p className="text-gray-400 text-base sm:text-lg px-4 text-center">
-            Submit a research topic to start
-          </p>
-        </div>
+      {isTransitioning || messages.length === 0 ? ( // Show loading animation while transitioning
+        null
       ) : (
         <div className="max-w-4xl mx-auto">
           {messages.map((message, index) => (
@@ -53,7 +52,8 @@ export function ChatContainer({ messages, isVisible, className = '' }: ChatConta
           ))}
           <div ref={bottomRef} />
         </div>
-      )}
+      )
+      }
     </motion.div>
   );
 }

@@ -46,8 +46,8 @@ export const ChatMessage = memo(function ChatMessage({ message }: ChatMessagePro
       transition={{ duration: 0.3, ease: 'easeOut', delay: 0.05 }}
       className="flex justify-start mb-3 sm:mb-4"
     >
-      <div className="flex flex-col items-start max-w-[95%] sm:max-w-[90%] md:max-w-[85%] w-full">
-        <div className="bg-gray-900 rounded-2xl rounded-tl-sm shadow-md w-full overflow-hidden">
+      <div className="flex flex-col items-start max-w-[95%] sm:max-w-[90%] md:max-w-[85%] w-full mx-auto">
+        <div className="w-full overflow-hidden mx-auto">
           <ResearchResponseData
             isVisible={true}
             currentJob={message.researchJob || null}

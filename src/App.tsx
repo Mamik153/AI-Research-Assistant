@@ -19,24 +19,24 @@ function App() {
   const handleSubmit = useCallback((topic: string) => {
     // 1. Set transitioning flag
     setIsTransitioning(true);
-    
+
     // 2. Change layout mode to chat (triggers animation)
     setLayoutMode('chat');
-    
+
     // 3. Add user message to chat
-    const userMessage: ChatMessage = {
-      id: `user-${Date.now()}`,
-      type: 'user',
-      content: topic,
-      timestamp: new Date().toISOString()
-    };
-    setChatMessages(prev => [...prev, userMessage]);
-    
+    /* const userMessage: ChatMessage = {
+       id: `user-${Date.now()}`,
+       type: 'user',
+       content: topic,
+       timestamp: new Date().toISOString()
+     };
+     setChatMessages(prev => [...prev, userMessage]);*/
+
     // 4. Submit research job
     submitResearch(topic);
-    
+
     // 5. Reset transitioning flag after animation
-    setTimeout(() => setIsTransitioning(false), 500);
+    //setTimeout(() => setIsTransitioning(false), 500);
   }, [submitResearch]);
 
   // Handle position transition complete
@@ -52,7 +52,7 @@ function App() {
         const existingIndex = prev.findIndex(
           m => m.type === 'assistant' && m.researchJob?.jobId === currentJob.jobId
         );
-        
+
         const assistantMessage: ChatMessage = {
           id: currentJob.jobId,
           type: 'assistant',
@@ -61,7 +61,7 @@ function App() {
           researchJob: currentJob,
           researchResult: result || undefined
         };
-        
+
         if (existingIndex >= 0) {
           // Update existing assistant message
           const updated = [...prev];
@@ -97,19 +97,21 @@ function App() {
       <div className="h-screen w-full overflow-hidden relative app">
         {/* Background Plasma Effect */}
         <div className="absolute inset-0 z-0">
-          <Plasma
+          { /* <Plasma
             color="#FDFBD4"
             speed={0.3}
             direction="forward"
             scale={2.1}
             opacity={0.1}
             mouseInteractive={false}
-          />
+          />*/}
         </div>
 
         {/* Chat Container */}
         <div className="absolute top-0 left-0 right-0 z-10" style={{ bottom: '120px' }}>
           <ChatContainer
+            topic={currentJob?.topic}
+            isTransitioning={isTransitioning}
             messages={chatMessages}
             isVisible={layoutMode === 'chat'}
             className="h-full"

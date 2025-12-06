@@ -93,3 +93,51 @@ export interface ChatMessage {
 }
 
 export type LayoutMode = 'centered' | 'chat';
+
+export type AppView = 'DASHBOARD' | 'MINDMAP' | 'FLASHCARDS';
+
+
+export interface GroundingChunk {
+  web?: {
+    uri: string;
+    title: string;
+  };
+}
+
+export interface GeminiResearchResult {
+  summary: string;
+  groundingChunks: GroundingChunk[];
+  rawText: string;
+}
+
+export interface MindMapNode {
+  id: string;
+  label: string;
+  group: number;
+  description?: string;
+}
+
+export interface MindMapLink {
+  source: string;
+  target: string;
+  value: number;
+}
+
+export interface MindMapData {
+  nodes: MindMapNode[];
+  links: MindMapLink[];
+}
+
+export interface FlashCard {
+  front: string;
+  back: string;
+}
+
+export interface StructuredResearchData {
+  mindMap: MindMapData;
+  flashCards: FlashCard[];
+}
+
+export type ImageSize = '1K' | '2K' | '4K';
+
+export type CitationStyle = 'APA' | 'MLA';

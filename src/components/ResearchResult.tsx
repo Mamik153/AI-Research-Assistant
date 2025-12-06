@@ -1,12 +1,15 @@
 import type { JSX } from 'react';
 import type { ResearchResultProps } from '../types/research';
 import './ResearchResult.css';
+import { BadgePlus, Copy, Download } from 'lucide-react';
 
 /**
  * Enhanced markdown rendering function
  * Handles headers, lists, bold, italic, code blocks, and links
  */
 const renderMarkdownContent = (content: string) => {
+
+  
     const lines = content.split('\n');
     const elements: JSX.Element[] = [];
     let currentListItems: string[] = [];
@@ -285,7 +288,7 @@ export const ResearchResult = ({ result, onNewResearch }: ResearchResultProps) =
                 </div>
             </div>
 
-            <div className="research-result__actions justify-end bg-gray-900 sticky top-0">
+            <div className="research-result__actions justify-end bg-gray-900 sticky top-0 hidden">
                 <button
                     onClick={handleCopyReport}
                     className="research-result__action-btn research-result__action-btn--secondary"
@@ -319,6 +322,17 @@ export const ResearchResult = ({ result, onNewResearch }: ResearchResultProps) =
                 <div className="research-result__report">
                     <div className="research-result__report-content text-slate-300">
                         {renderMarkdownContent(result.report)}
+                    </div>
+                    <div className="research-result__report-content-footer mt-2 gap-2 flex items-center">
+                        <button onClick={onNewResearch} className="research-result__report-content-footer-btn p-2 rounded-md hover:bg-gray-700/20">
+                            <BadgePlus className="w-4 h-4" />
+                        </button>
+                        <button onClick={handleCopyReport} className="research-result__report-content-footer-btn p-2 rounded-md hover:bg-gray-700/20">
+                            <Copy className="w-4 h-4" />
+                        </button>
+                        <button onClick={handleDownloadReport} className="research-result__report-content-footer-btn p-2 rounded-md hover:bg-gray-700/20">
+                            <Download className="w-4 h-4" />
+                        </button>
                     </div>
                 </div>
             </div>

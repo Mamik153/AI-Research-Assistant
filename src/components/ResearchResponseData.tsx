@@ -1,6 +1,7 @@
 import { JobStatus } from './JobStatus';
 import { ResearchResult } from './ResearchResult';
 import type { ResearchJob, ResearchResult as ResearchResultType } from '../types/research';
+import LoadingAnimation from './LoadingAnimation';
 
 interface ResearchResponseDataProps {
   isVisible: boolean;
@@ -20,18 +21,20 @@ const ResearchResponseData = ({ isVisible, currentJob, result, resetJob }: Resea
         <div className="w-full relative text-white">
             {currentJob && (
                 <div className="space-y-4">
-                    <JobStatus 
+                    {/*<JobStatus 
                         jobId={currentJob.jobId}
                         status={currentJob.status}
                         message={currentJob.message}
                         createdAt={currentJob.createdAt}
-                    />
+                    />*/}
                     
-                    {result && (
+                    {result ? (
                         <ResearchResult 
                             result={result}
                             onNewResearch={resetJob}
                         />
+                    ) : (
+                        <LoadingAnimation topic={currentJob?.topic || ''} />
                     )}
                 </div>
             )}
