@@ -55,7 +55,7 @@ export const useResearchJob = (): UseResearchJobReturn => {
                         console.log('Result response:', resultResponse);
                         if (resultResponse.report) {
                             const researchResult: ResearchResult = {
-                                jobId: resultResponse.job_id,
+                                jobId: resultResponse.jobId,
                                 report: resultResponse.report,
                                 completedAt: resultResponse.completed_at || new Date().toISOString(),
                                 topic: prevJob.topic,

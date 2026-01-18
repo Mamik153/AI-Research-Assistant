@@ -24,13 +24,13 @@ function App() {
     setLayoutMode('chat');
 
     // 3. Add user message to chat
-    /* const userMessage: ChatMessage = {
-       id: `user-${Date.now()}`,
-       type: 'user',
-       content: topic,
-       timestamp: new Date().toISOString()
-     };
-     setChatMessages(prev => [...prev, userMessage]);*/
+    const userMessage: ChatMessage = {
+      id: `user-${Date.now()}`,
+      type: 'user',
+      content: topic,
+      timestamp: new Date().toISOString()
+    };
+    setChatMessages(prev => [...prev, userMessage]);
 
     // 4. Submit research job
     submitResearch(topic);
@@ -79,9 +79,36 @@ function App() {
   useEffect(() => {
     if (error) {
       console.error('Research error:', error);
-      // Error will be displayed in the ResearchResponseData component
+
+      // If there's an error but no current job, it means submission failed
+      // We need to show this error in the chat
+      if (!currentJob) {
+        setChatMessages(prev => {
+          // Check if the last message is already this error to avoid duplicates
+          const lastMsg = prev[prev.length - 1];
+          if (lastMsg?.researchJob?.status === 'failed' && lastMsg.researchJob.message === error) {
+            return prev;
+          }
+
+          const errorMessage: ChatMessage = {
+            id: `error-${Date.now()}`,
+            type: 'assistant',
+            content: '',
+            timestamp: new Date().toISOString(),
+            researchJob: {
+              jobId: 'submission-failed',
+              status: 'failed',
+              message: error,
+              createdAt: new Date().toISOString(),
+              topic: 'Research Request'
+            }
+          };
+
+          return [...prev, errorMessage];
+        });
+      }
     }
-  }, [error]);
+  }, [error, currentJob]);
 
   // Placeholder handlers for future features
   const handlePlusClick = useCallback(() => {
