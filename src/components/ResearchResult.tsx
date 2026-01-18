@@ -288,7 +288,7 @@ export const ResearchResult = ({ result, onNewResearch }: ResearchResultProps) =
                 </div>
             </div>
 
-            <div className="research-result__actions justify-end bg-gray-900 sticky top-0 hidden">
+            {/*<div className="research-result__actions justify-end bg-gray-900 sticky top-0 hidden">
                 <button
                     onClick={handleCopyReport}
                     className="research-result__action-btn research-result__action-btn--secondary"
@@ -309,7 +309,7 @@ export const ResearchResult = ({ result, onNewResearch }: ResearchResultProps) =
                 >
                     🔍 New Research
                 </button>
-            </div>
+            </div>*/}
 
             <div className="research-result__content text-white">
                 <div className="research-result__content-header hidden">

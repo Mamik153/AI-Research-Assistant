@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-const LoadingAnimation: React.FC<{ topic?: string }> = ({ topic }) => {
+const LoadingAnimation: React.FC<{ topic?: string; message?: string }> = ({ topic, message }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -24,7 +24,7 @@ const LoadingAnimation: React.FC<{ topic?: string }> = ({ topic }) => {
     const scene = new THREE.Scene();
     // Fix: Aspect ratio must match the renderer size (300/300 = 1) to avoid distortion (egg shape)
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-    
+
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(width, height);
     rendererRef.current = renderer;
@@ -116,10 +116,10 @@ const LoadingAnimation: React.FC<{ topic?: string }> = ({ topic }) => {
         cancelAnimationFrame(animationFrameRef.current);
         animationFrameRef.current = null;
       }
-      
+
       // Remove event listener
       window.removeEventListener('mousemove', handleMouseMove);
-      
+
       // Clean up Three.js resources
       if (rendererRef.current) {
         if (containerRef.current && rendererRef.current.domElement.parentNode === containerRef.current) {
@@ -136,8 +136,8 @@ const LoadingAnimation: React.FC<{ topic?: string }> = ({ topic }) => {
   return (
     <div className="flex flex-col items-center justify-center py-20 animate-fade-in h-full">
       <div ref={containerRef} className="w-[300px] h-[300px]" />
-      <p className="text-xl font-medium text-white mt-4 animate-pulse">
-        Synthesizing Knowledge about {topic}...
+      <p className="text-xl font-medium text-white mt-4 animate-pulse text-center max-w-md px-4">
+        {message || `Synthesizing Knowledge about ${topic}...`}
       </p>
     </div>
   );

@@ -6,10 +6,14 @@ export interface ResearchJobResponse {
   message: string;
 }
 
-export interface ResearchResultResponse extends ResearchJobResponse {
-  report?: string;
-  completed_at?: string;
-  error_message?: string;
+export interface ResearchResultResponse {
+  jobId: string;
+  status: 'completed' | 'failed';
+  report: string;
+  sources: string[];
+  completed_at: string;
+  topic: string;
+  message?: string; // Optional in case error
 }
 
 // Application State Types
