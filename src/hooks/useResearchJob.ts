@@ -53,10 +53,13 @@ export const useResearchJob = (): UseResearchJobReturn => {
                 getResearchResult(statusResponse.job_id)
                     .then((resultResponse) => {
                         console.log('Result response:', resultResponse);
-                        if (resultResponse.report) {
+                        if (resultResponse.report || resultResponse.summary || (resultResponse.papers && resultResponse.papers.length > 0)) {
                             const researchResult: ResearchResult = {
                                 jobId: resultResponse.jobId,
                                 report: resultResponse.report,
+                                summary: resultResponse.summary,
+                                papers: resultResponse.papers,
+                                keyInsights: resultResponse.key_insights,
                                 completedAt: resultResponse.completed_at || new Date().toISOString(),
                                 topic: prevJob.topic,
                             };

@@ -50,7 +50,10 @@ export const submitResearch = async (topic: string): Promise<ResearchJobResponse
     const requestBody: ResearchSubmissionRequest = { topic: topic.trim() };
 
     try {
-        const response = await fetch(`${API_BASE_URL}/research`, {
+        const useDynamic = import.meta.env.VITE_USE_DYNAMIC_UI === 'true';
+        const endpoint = useDynamic ? `${API_BASE_URL}/research/dynamic` : `${API_BASE_URL}/research`;
+
+        const response = await fetch(endpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -176,7 +179,14 @@ export const getResearchResult = async (jobId: string): Promise<ResearchResultRe
     }
 
     try {
-        const response = await fetch(`${API_BASE_URL}/research/${encodeURIComponent(jobId)}/result`, {
+        const useDynamic = import.meta.env.VITE_USE_DYNAMIC_UI === 'true';
+        // For dynamic: /research/dynamic/:jobId/result
+        // For legacy: /research/:jobId/result
+        const endpoint = useDynamic
+            ? `${API_BASE_URL}/research/dynamic/${encodeURIComponent(jobId)}/result`
+            : `${API_BASE_URL}/research/${encodeURIComponent(jobId)}/result`;
+
+        const response = await fetch(endpoint, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
