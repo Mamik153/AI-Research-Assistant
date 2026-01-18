@@ -56,10 +56,10 @@ interface SpeechRecognitionAlternative {
 
 interface WindowWithSpeechRecognition extends Window {
   SpeechRecognition?: {
-    new (): SpeechRecognition;
+    new(): SpeechRecognition;
   };
   webkitSpeechRecognition?: {
-    new (): SpeechRecognition;
+    new(): SpeechRecognition;
   };
 }
 
@@ -85,7 +85,7 @@ export function AIInputComponent({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const baseHeightRef = useRef<number>(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  
+
   // Ref for speech recognition
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const finalTranscriptRef = useRef<string>('');
@@ -94,15 +94,15 @@ export function AIInputComponent({
   useEffect(() => {
     const windowWithSpeech = window as unknown as WindowWithSpeechRecognition;
     const SpeechRecognition = windowWithSpeech.SpeechRecognition || windowWithSpeech.webkitSpeechRecognition;
-    
+
     if (SpeechRecognition) {
       setIsSpeechSupported(true);
       const recognition = new SpeechRecognition();
-      
+
       recognition.continuous = true;
       recognition.interimResults = true;
       recognition.lang = 'en-US';
-      
+
       recognition.onstart = () => {
         setIsRecording(true);
         // Store the current textarea value as the base when starting a new recording session
@@ -113,11 +113,11 @@ export function AIInputComponent({
           finalTranscriptRef.current = '';
         }
       };
-      
+
       recognition.onresult = (event: SpeechRecognitionEvent) => {
         let interimTranscript = '';
         let finalTranscript = '';
-        
+
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript;
           if (event.results[i].isFinal) {
@@ -126,26 +126,26 @@ export function AIInputComponent({
             interimTranscript += transcript;
           }
         }
-        
+
         if (finalTranscript) {
           // Append final transcript to the stored base value
-          finalTranscriptRef.current = finalTranscriptRef.current 
-            ? `${finalTranscriptRef.current} ${finalTranscript.trim()}` 
+          finalTranscriptRef.current = finalTranscriptRef.current
+            ? `${finalTranscriptRef.current} ${finalTranscript.trim()}`
             : finalTranscript.trim();
           setValue(finalTranscriptRef.current);
         } else if (interimTranscript) {
           // Show interim results appended to the final transcript so far
-          const displayValue = finalTranscriptRef.current 
-            ? `${finalTranscriptRef.current} ${interimTranscript}` 
+          const displayValue = finalTranscriptRef.current
+            ? `${finalTranscriptRef.current} ${interimTranscript}`
             : interimTranscript;
           setValue(displayValue);
         }
       };
-      
+
       recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
         console.error('Speech recognition error:', event.error);
         setIsRecording(false);
-        
+
         // Handle specific errors
         if (event.error === 'no-speech') {
           // User didn't speak, just stop recording
@@ -158,17 +158,17 @@ export function AIInputComponent({
           alert('Microphone permission denied. Please enable microphone access in your browser settings.');
         }
       };
-      
+
       recognition.onend = () => {
         setIsRecording(false);
         // Keep the final transcript for the next recording session
       };
-      
+
       recognitionRef.current = recognition;
     } else {
       setIsSpeechSupported(false);
     }
-    
+
     return () => {
       if (recognitionRef.current) {
         recognitionRef.current.stop();
@@ -189,10 +189,10 @@ export function AIInputComponent({
       const originalTransition = textareaRef.current.style.transition;
       textareaRef.current.style.transition = 'none';
       textareaRef.current.style.height = 'auto';
-      
+
       // Force reflow to ensure accurate measurement
       textareaRef.current.offsetHeight;
-      
+
       baseHeightRef.current = textareaRef.current.scrollHeight;
       textareaRef.current.style.transition = originalTransition;
     }
@@ -202,7 +202,7 @@ export function AIInputComponent({
   useEffect(() => {
     const hasLineBreak = value.includes('\n');
     const shouldBeMultiLine = value.length >= 20 || hasLineBreak;
-    
+
     if (shouldBeMultiLine !== isMultiLine) {
       setIsMultiLine(shouldBeMultiLine);
     }
@@ -215,17 +215,17 @@ export function AIInputComponent({
       // Temporarily disable transition for accurate measurement
       const originalTransition = textareaRef.current.style.transition;
       textareaRef.current.style.transition = 'none';
-      
+
       // Reset height to get correct scrollHeight
       textareaRef.current.style.height = 'auto';
-      
+
       // Force reflow
       textareaRef.current.offsetHeight;
-      
+
       // Calculate new height, capped at max height of 100px
       const scrollHeight = textareaRef.current.scrollHeight;
       const newHeight = Math.min(scrollHeight, 100);
-      
+
       // Re-enable transition before setting new height
       textareaRef.current.style.transition = originalTransition;
       textareaRef.current.style.height = `${newHeight}px`;
@@ -243,10 +243,10 @@ export function AIInputComponent({
           textareaRef.current.style.transition = 'none';
           textareaRef.current.style.height = 'auto';
           textareaRef.current.offsetHeight; // Force reflow
-          
+
           const scrollHeight = textareaRef.current.scrollHeight;
           const newHeight = Math.min(scrollHeight, 100);
-          
+
           textareaRef.current.style.transition = originalTransition;
           textareaRef.current.style.height = `${newHeight}px`;
         }
@@ -276,11 +276,11 @@ export function AIInputComponent({
       onMicClick?.();
       return;
     }
-    
+
     if (isLoading || disabled) {
       return;
     }
-    
+
     if (isRecording) {
       // Stop recording
       if (recognitionRef.current) {
@@ -297,7 +297,7 @@ export function AIInputComponent({
         }
       }
     }
-    
+
     // Call the optional callback
     onMicClick?.();
   };
@@ -309,13 +309,13 @@ export function AIInputComponent({
       if (isRecording && recognitionRef.current) {
         recognitionRef.current.stop();
       }
-      
+
       // Trigger submit animation
       setIsAnimating(true);
-      
+
       // Call onSubmit callback
       onSubmit(trimmedValue);
-      
+
       // Clear textarea and reset states after animation completes
       setTimeout(() => {
         setValue('');
@@ -371,15 +371,14 @@ export function AIInputComponent({
   return (
     <div
       ref={containerRef}
-      className={`z-10 w-[90%] sm:w-[80%] md:w-full max-w-sm md:max-w-2xl px-3 sm:px-4 rounded-3xl bg-white shadow-lg ${
-        isMounted ? 'opacity-100' : 'opacity-0'
-      } ${className}`}
+      className={`z-10 w-[90%] sm:w-[80%] md:w-full max-w-sm md:max-w-2xl px-3 sm:px-4 rounded-3xl bg-white shadow-lg ${isMounted ? 'opacity-100' : 'opacity-0'
+        } ${className}`}
       style={{
         ...getPositionStyles(),
         willChange: isAtBottom ? 'auto' : 'transform, opacity'
       }}
     >
-      <motion.div 
+      <motion.div
         className="relative p-4 flex items-center"
         animate={{
           paddingBottom: isMultiLine ? '56px' : '16px'
@@ -399,7 +398,7 @@ export function AIInputComponent({
             placeholder={placeholder}
             aria-label="Message input"
             className="w-full resize-none rounded-md py-2 px-[15px] outline-none overflow-y-auto focus-visible:ring-0 focus-visible:ring-none focus-visible:ring-offset-0 disabled:opacity-50 disabled:cursor-not-allowed text-black"
-            style={{ 
+            style={{
               maxHeight: '100px',
               transition: 'height 200ms ease-out'
             }}
@@ -409,7 +408,7 @@ export function AIInputComponent({
         </div>
 
         {/* Action buttons group - positioned at bottom-right */}
-        <motion.div 
+        <motion.div
           className={`flex gap-2 shrink-0 ${isMultiLine ? 'absolute' : 'relative'}`}
           animate={{
             bottom: isMultiLine ? '16px' : 'auto',
@@ -423,11 +422,10 @@ export function AIInputComponent({
           {/* MicrophoneButton - min 44x44px for touch */}
           <button
             onClick={handleMicClick}
-            className={`flex min-w-[44px] min-h-[44px] size-11 items-center justify-center rounded-full p-1 transition-all duration-200 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
-              isRecording 
-                ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse' 
-                : 'bg-gray-100 hover:bg-gray-200 text-black'
-            }`}
+            className={`flex min-w-[44px] min-h-[44px] size-11 items-center justify-center rounded-full p-1 transition-all duration-200 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${isRecording
+              ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse'
+              : 'bg-gray-100 hover:bg-gray-200 text-black'
+              }`}
             aria-label={isRecording ? 'Stop voice input' : 'Start voice input'}
             aria-pressed={isRecording}
             type="button"
@@ -440,9 +438,8 @@ export function AIInputComponent({
           {/* SubmitButton with dark background - min 44x44px for touch */}
           <button
             onClick={handleSubmit}
-            className={`flex min-w-[44px] min-h-[44px] size-11 items-center justify-center rounded-full p-1 transition-all duration-200 bg-[#121212] text-white hover:bg-[#2a2a2a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
-              isAnimating ? 'scale-90 rotate-90' : 'hover:scale-105 rotate-0'
-            }`}
+            className={`flex min-w-[44px] min-h-[44px] size-11 items-center justify-center rounded-full p-1 transition-all duration-200 bg-[#121212] text-white hover:bg-[#2a2a2a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${isAnimating ? 'scale-90 rotate-90' : 'hover:scale-105 rotate-0'
+              }`}
             aria-label="Submit message"
             type="button"
             disabled={!value.trim() || isLoading || disabled}

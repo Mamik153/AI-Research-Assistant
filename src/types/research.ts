@@ -6,10 +6,21 @@ export interface ResearchJobResponse {
   message: string;
 }
 
+export interface ResearchPaper {
+  title: string;
+  authors: string[];
+  published: string;
+  summary: string;
+  pdf_url: string;
+}
+
 export interface ResearchResultResponse {
   jobId: string;
   status: 'completed' | 'failed';
-  report: string;
+  report?: string; // Markdown report (legacy)
+  summary?: string; // Main summary
+  papers?: ResearchPaper[]; // List of papers
+  key_insights?: string[]; // List of insights
   sources: string[];
   completed_at: string;
   topic: string;
@@ -29,7 +40,10 @@ export interface ResearchJob {
 
 export interface ResearchResult {
   jobId: string;
-  report: string;
+  report?: string; // Legacy markdown
+  summary?: string;
+  papers?: ResearchPaper[];
+  keyInsights?: string[];
   completedAt: string;
   topic: string;
 }
