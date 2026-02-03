@@ -57,6 +57,7 @@ const ResearchResponseData = ({ isVisible, currentJob, result, resetJob }: Resea
                         <LoadingAnimation
                             topic={currentJob?.topic || ''}
                             message={currentJob?.message}
+                            chainOfThought={currentJob?.chainOfThought}
                         />
                     )}
                 </div>

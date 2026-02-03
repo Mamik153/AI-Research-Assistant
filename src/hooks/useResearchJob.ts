@@ -8,6 +8,7 @@ import type {
     ApiError
 } from '../types/research';
 import { submitResearch, pollJobStatus, getResearchResult } from '../services/researchApi';
+import { parseSummary, buildParsedSummaryFromFlat } from '../utils/parseSummary';
 
 /**
  * Custom hook to manage research job lifecycle
@@ -42,6 +43,7 @@ export const useResearchJob = (): UseResearchJobReturn => {
                 ...prevJob,
                 status: statusResponse.status as JobStatus,
                 message: statusResponse.message,
+                chainOfThought: statusResponse.chain_of_thought,
             };
 
             console.log('Updated job:', updatedJob);
@@ -54,12 +56,34 @@ export const useResearchJob = (): UseResearchJobReturn => {
                     .then((resultResponse) => {
                         console.log('Result response:', resultResponse);
                         if (resultResponse.report || resultResponse.summary || (resultResponse.papers && resultResponse.papers.length > 0)) {
+                            const parsed = parseSummary(resultResponse.summary);
+                            const hasFlatStructure =
+                                (resultResponse.key_insights?.length ?? 0) > 0 ||
+                                (resultResponse.generated_diagrams?.length ?? 0) > 0 ||
+                                resultResponse.structured_sections != null;
+                            const parsedSummary = parsed ?? (hasFlatStructure
+                                ? buildParsedSummaryFromFlat(
+                                    resultResponse.summary,
+                                    resultResponse.key_insights,
+                                    resultResponse.generated_diagrams,
+                                    resultResponse.structured_sections
+                                  )
+                                : undefined);
+                            const summaryText = parsedSummary?.summary ?? resultResponse.summary;
+                            const keyInsights = parsedSummary?.key_insights?.length
+                                ? parsedSummary.key_insights
+                                : resultResponse.key_insights;
+                            const generatedDiagrams = parsedSummary?.generated_diagrams?.length
+                                ? parsedSummary.generated_diagrams
+                                : resultResponse.generated_diagrams;
                             const researchResult: ResearchResult = {
                                 jobId: resultResponse.jobId,
                                 report: resultResponse.report,
-                                summary: resultResponse.summary,
+                                summary: summaryText,
+                                parsedSummary: parsedSummary ?? undefined,
                                 papers: resultResponse.papers,
-                                keyInsights: resultResponse.key_insights,
+                                keyInsights,
+                                generatedDiagrams,
                                 completedAt: resultResponse.completed_at || new Date().toISOString(),
                                 topic: prevJob.topic,
                             };

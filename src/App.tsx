@@ -5,8 +5,6 @@ import { AIInputComponent } from './components'
 import { ChatContainer } from './components/ChatContainer'
 import './App.css'
 import type { LayoutMode, ChatMessage } from './types/research'
-// @ts-ignore - Plasma is a .jsx file without type definitions
-import Plasma from './components/Plasma'
 
 function App() {
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('centered')
@@ -43,6 +41,20 @@ function App() {
   const handlePositionTransitionComplete = useCallback(() => {
     setIsTransitioning(false);
   }, []);
+
+  // Reset research: clear job, messages, and return to centered layout so user can start fresh
+  const handleReset = useCallback(() => {
+    resetJob();
+    setChatMessages([]);
+    setLayoutMode('centered');
+  }, [resetJob]);
+
+  // Once we have a job, transition is done — show chat (loading/result). Input is already hidden.
+  useEffect(() => {
+    if (currentJob) {
+      setIsTransitioning(false);
+    }
+  }, [currentJob]);
 
   // Sync research job state with chat messages
   useEffect(() => {
@@ -122,40 +134,33 @@ function App() {
   return (
     <ErrorBoundary>
       <div className="h-screen w-full overflow-hidden relative app">
-        {/* Background Plasma Effect */}
-        <div className="absolute inset-0 z-0">
-          { /* <Plasma
-            color="#FDFBD4"
-            speed={0.3}
-            direction="forward"
-            scale={2.1}
-            opacity={0.1}
-            mouseInteractive={false}
-          />*/}
-        </div>
-
         {/* Chat Container */}
-        <div className="absolute top-0 left-0 right-0 z-10" style={{ bottom: '120px' }}>
+        <div className="absolute top-0 left-0 right-0 z-10" style={{ bottom: chatMessages.length === 0 ? '120px' : '0' }}>
           <ChatContainer
             topic={currentJob?.topic}
             isTransitioning={isTransitioning}
             messages={chatMessages}
             isVisible={layoutMode === 'chat'}
+            onReset={handleReset}
             className="h-full"
           />
         </div>
 
-        {/* AI Input Component */}
-        <AIInputComponent
-          onSubmit={handleSubmit}
-          onPlusClick={handlePlusClick}
-          onMicClick={handleMicClick}
-          placeholder="Enter a topic to research"
-          disabled={isLoading}
-          isAtBottom={layoutMode === 'chat'}
-          onPositionTransitionComplete={handlePositionTransitionComplete}
-          isLoading={isLoading}
-        />
+        {/* AI Input Component - only visible on initial load and after "Try New Research" */}
+        {!currentJob && !result && (
+          <AIInputComponent
+            onSubmit={handleSubmit}
+            onPlusClick={handlePlusClick}
+            onMicClick={handleMicClick}
+            placeholder="Enter a topic to research"
+            disabled={isLoading}
+            isAtBottom={layoutMode === 'chat'}
+            onPositionTransitionComplete={handlePositionTransitionComplete}
+            isLoading={isLoading}
+          />
+        )}
+
+
       </div>
     </ErrorBoundary>
   )

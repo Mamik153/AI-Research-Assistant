@@ -6,15 +6,16 @@ import ResearchResponseData from './ResearchResponseData';
 interface ChatMessageProps {
   message: ChatMessageType;
   isLatest: boolean;
+  onReset?: () => void;
 }
 
-export const ChatMessage = memo(function ChatMessage({ message }: ChatMessageProps) {
+export const ChatMessage = memo(function ChatMessage({ message, onReset }: ChatMessageProps) {
   const formatTimestamp = (timestamp: string) => {
     const date = new Date(timestamp);
-    return date.toLocaleTimeString('en-US', { 
-      hour: 'numeric', 
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
       minute: '2-digit',
-      hour12: true 
+      hour12: true
     });
   };
 
@@ -24,7 +25,7 @@ export const ChatMessage = memo(function ChatMessage({ message }: ChatMessagePro
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, ease: 'easeOut' }}
-        className="flex justify-end mb-3 sm:mb-4"
+        className="flex justify-end mb-3 sm:mb-4 hidden"
       >
         <div className="flex flex-col items-end max-w-[95%] sm:max-w-[85%] md:max-w-[70%]">
           <div className="bg-blue-500 text-white rounded-2xl rounded-tr-sm px-3 py-2 sm:px-4 shadow-sm">
@@ -52,12 +53,12 @@ export const ChatMessage = memo(function ChatMessage({ message }: ChatMessagePro
             isVisible={true}
             currentJob={message.researchJob || null}
             result={message.researchResult || null}
-            resetJob={() => {}}
+            resetJob={onReset ?? (() => {})}
           />
         </div>
-        <span className="text-xs text-gray-400 mt-1">
+        {/* <span className="text-xs text-gray-400 mt-1">
           {formatTimestamp(message.timestamp)}
-        </span>
+        </span> */}
       </div>
     </motion.div>
   );

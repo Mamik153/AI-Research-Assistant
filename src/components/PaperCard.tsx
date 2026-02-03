@@ -15,9 +15,9 @@ export const PaperCard = ({ paper, index, onReadAbstract }: PaperCardProps) => {
 
     return (
         <div
-            className="group relative bg-gray-900/40 backdrop-blur-sm border border-gray-800 rounded-2xl overflow-hidden hover:border-gray-700 hover:bg-gray-900/60 transition-all duration-300 flex flex-col h-full"
+            className="group relative bg-gray-900/40 backdrop-blur-sm border border-gray-600 rounded-2xl overflow-hidden transition-all duration-300 flex flex-col h-full"
             style={{ animationDelay: `${index * 100}ms` }}
-            onClick={onReadAbstract}
+         //   onClick={onReadAbstract}
         >
             {/* Gradient accent top */}
             {/* <div className="h-1 w-full bg-gradient-to-r from-blue-500/50 via-purple-500/50 to-pink-500/50 opacity-50 group-hover:opacity-100 transition-opacity"></div> */}
@@ -25,13 +25,13 @@ export const PaperCard = ({ paper, index, onReadAbstract }: PaperCardProps) => {
             <div className="p-6 flex flex-col flex-grow">
                 <div className="flex items-start justify-between gap-4 mb-4">
                     <div className="flex-1">
-                        <h4 className="text-lg font-bold text-gray-100 leading-tight group-hover:text-blue-400 transition-colors">
+                        <h4 className="text-lg font-bold text-gray-100 leading-tight transition-colors line-clamp-1">
                             {paper.title}
                         </h4>
                     </div>
                 </div>
 
-                <div className="flex flex-wrap gap-y-2 gap-x-4 mb-4 text-xs text-gray-500 font-medium uppercase tracking-wider">
+                <div className="flex flex-wrap gap-y-2 gap-x-4 mb-4 text-xs text-gray-300 font-medium uppercase tracking-wider">
                     <div className="flex items-center gap-1.5">
                         <Users className="w-3.5 h-3.5" />
                         <span className="truncate max-w-[150px]">
@@ -45,16 +45,16 @@ export const PaperCard = ({ paper, index, onReadAbstract }: PaperCardProps) => {
                 </div>
 
                 <div className=" mb-6 flex-grow">
-                    <div className="text-sm text-gray-400 leading-relaxed line-clamp-3">
+                    <div className="text-sm text-gray-300 leading-relaxed line-clamp-2">
                         {paper.summary}
                     </div>
                 </div>
 
-                <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-800/50">
+                <div className="flex items-center justify-between mt-auto py-2 px-2 border rounded-3xl border-gray-200/50 -mx-3 -mb-2">
 
                     <button
                         onClick={onReadAbstract}
-                        className="text-xs font-medium text-gray-100 hover:text-white flex items-center gap-1 transition-colors px-3 py-1.5 rounded-md hover:bg-gray-100/10 border border-transparent hover:border-gray-300"
+                        className="text-xs font-medium text-gray-100 hover:text-white flex items-center gap-1 transition-colors px-3 py-1.5 rounded-xl hover:bg-gray-100/10 border border-transparent hover:border-gray-300"
                     >
                         Read Abstract <FileText className="w-3 h-3" />
                     </button>

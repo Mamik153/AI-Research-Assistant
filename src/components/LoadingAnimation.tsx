@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-const LoadingAnimation: React.FC<{ topic?: string; message?: string }> = ({ topic, message }) => {
+const LoadingAnimation: React.FC<{ topic?: string; message?: string, chainOfThought?: string[] }> = ({ topic, message, chainOfThought }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -134,11 +134,32 @@ const LoadingAnimation: React.FC<{ topic?: string; message?: string }> = ({ topi
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center py-20 animate-fade-in h-full">
+    <div className="flex flex-col items-center justify-center py-10 animate-fade-in h-full">
       <div ref={containerRef} className="w-[300px] h-[300px]" />
-      <p className="text-xl font-medium text-white mt-4 animate-pulse text-center max-w-md px-4">
+
+      {/* Current Loading Status Message */}
+      <p className="text-xl font-medium text-white mt-4 text-center max-w-md px-4 min-h-[3rem]">
         {message || `Synthesizing Knowledge about ${topic}...`}
       </p>
+
+      {/* Chain of Thought Stream */}
+      {chainOfThought && chainOfThought.length > 0 && (
+        <div className="mt-8 px-4 w-full max-w-2xl">
+          <div className="flex flex-col space-y-2 opacity-90">
+            {/* Show only the last 3 thought steps to keep it clean */}
+            {chainOfThought.map((step, index) => (
+              <div
+                key={index}
+                className={`text-sm text-gray-300 font-mono transition-all duration-500 animate-slide-up bg-white/5 px-3 py-2 rounded-lg`}
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <span className="mr-2 text-blue-300">➜</span>
+                {step}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

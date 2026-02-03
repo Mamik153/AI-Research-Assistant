@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import type { ChatMessage as ChatMessageType } from '../types/research';
 import { ChatMessage } from './ChatMessage';
-import LoadingAnimation from './LoadingAnimation';
 
 interface ChatContainerProps {
   messages: ChatMessageType[];
@@ -10,9 +9,10 @@ interface ChatContainerProps {
   className?: string;
   isTransitioning?: boolean;
   topic?: string;
+  onReset?: () => void;
 }
 
-export function ChatContainer({ messages, isVisible, isTransitioning, className = '', topic }: ChatContainerProps) {
+export function ChatContainer({ messages, isVisible, className = '', onReset }: ChatContainerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -39,15 +39,14 @@ export function ChatContainer({ messages, isVisible, isTransitioning, className 
         scrollbarColor: '#cbd5e0 transparent'
       }}
     >
-      {isTransitioning || messages.length === 0 ? ( // Show loading animation while transitioning
-        null
-      ) : (
+      {messages.length === 0 ? null : (
         <div className="max-w-4xl mx-auto">
           {messages.map((message, index) => (
             <ChatMessage
               key={message.id}
               message={message}
               isLatest={index === messages.length - 1}
+              onReset={onReset}
             />
           ))}
           <div ref={bottomRef} />
