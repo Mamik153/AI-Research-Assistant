@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import type { ChatMessage as ChatMessageType } from '../types/research';
 import { ChatMessage } from './ChatMessage';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface ChatContainerProps {
   messages: ChatMessageType[];
@@ -13,7 +14,6 @@ interface ChatContainerProps {
 }
 
 export function ChatContainer({ messages, isVisible, className = '', onReset }: ChatContainerProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when new messages arrive
@@ -29,30 +29,26 @@ export function ChatContainer({ messages, isVisible, className = '', onReset }: 
 
   return (
     <motion.div
-      ref={containerRef}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.1, ease: 'easeOut' }}
-      className={`overflow-y-auto px-3 py-4 sm:px-4 sm:py-6 ${className}`}
-      style={{
-        scrollbarWidth: 'thin',
-        scrollbarColor: '#cbd5e0 transparent'
-      }}
+      className={`h-full ${className}`}
     >
-      {messages.length === 0 ? null : (
-        <div className="max-w-4xl mx-auto">
-          {messages.map((message, index) => (
-            <ChatMessage
-              key={message.id}
-              message={message}
-              isLatest={index === messages.length - 1}
-              onReset={onReset}
-            />
-          ))}
-          <div ref={bottomRef} />
-        </div>
-      )
-      }
+      <ScrollArea className="h-full px-3 py-4 sm:px-4 sm:py-6">
+        {messages.length === 0 ? null : (
+          <div className="max-w-4xl mx-auto">
+            {messages.map((message, index) => (
+              <ChatMessage
+                key={message.id}
+                message={message}
+                isLatest={index === messages.length - 1}
+                onReset={onReset}
+              />
+            ))}
+            <div ref={bottomRef} />
+          </div>
+        )}
+      </ScrollArea>
     </motion.div>
   );
 }

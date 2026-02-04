@@ -90,12 +90,11 @@ export const DiagramViewer = ({ diagrams, className = '' }: DiagramViewerProps) 
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
-      if (!isFullscreen) return;
       e.preventDefault();
       setIsDragging(true);
       dragStart.current = { x: e.clientX, y: e.clientY, translateX: translate.x, translateY: translate.y };
     },
-    [isFullscreen, translate]
+    [translate]
   );
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
@@ -220,10 +219,10 @@ export const DiagramViewer = ({ diagrams, className = '' }: DiagramViewerProps) 
       </div>
 
       <div
-        className="relative overflow-hidden bg-gray-950/50 flex items-center justify-center min-h-[280px] cursor-grab active:cursor-grabbing"
+        className="relative overflow-hidden bg-gray-950/50 flex items-center justify-center min-h-[280px]"
         onMouseDown={handleMouseDown}
         onWheel={handleWheel}
-        style={{ cursor: isDragging ? 'grabbing' : undefined }}
+        style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
       >
         <div
           className="transition-transform duration-100 ease-out origin-center"

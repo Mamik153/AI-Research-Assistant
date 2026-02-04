@@ -39,7 +39,7 @@ export const StructuredSectionsGrid = ({ sections }: StructuredSectionsGridProps
 
   return (
     <div className="grid grid-cols-1 gap-8">
-      {hasOverview && sections.overview && <OverviewCard overview={sections.overview} />}
+      {/* {hasOverview && sections.overview && <OverviewCard overview={sections.overview} />} */}
       {hasKeyConcepts && <KeyConceptsNetwork keyConcepts={sections.key_concepts} />}
       {hasBenefitsRisks && (
         <BenefitsRisksDisplay benefits={sections.benefits} risks={sections.risks} />

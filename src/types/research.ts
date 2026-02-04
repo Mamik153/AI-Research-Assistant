@@ -139,6 +139,7 @@ export interface ResearchResult {
   generatedDiagrams?: string[];
   completedAt: string;
   topic: string;
+  tags?: string[]; // Optional tags for categorization
 }
 
 // Component Props Interfaces

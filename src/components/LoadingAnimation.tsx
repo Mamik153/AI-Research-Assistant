@@ -7,7 +7,7 @@ const LoadingAnimation: React.FC<{ topic?: string; message?: string, chainOfThou
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const animationFrameRef = useRef<number | null>(null);
 
-  useEffect(() => {
+ /* useEffect(() => {
     if (!containerRef.current) return;
 
     // Prevent double initialization (React StrictMode)
@@ -131,7 +131,7 @@ const LoadingAnimation: React.FC<{ topic?: string; message?: string, chainOfThou
         rendererRef.current = null;
       }
     };
-  }, []);
+  }, []);*/
 
   return (
     <div className="flex flex-col items-center justify-center py-10 animate-fade-in h-full">
