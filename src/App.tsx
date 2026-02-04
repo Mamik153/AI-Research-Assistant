@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
-import { ErrorBoundary } from './components/ErrorBoundary'
-import { useResearchJob } from './hooks/useResearchJob'
-import { AIInputComponent } from './components'
-import { ChatContainer } from './components/ChatContainer'
+import { ErrorBoundary } from '@/shared/components'
+import { useResearchJob } from '@/features/research'
+import { AIInputComponent } from '@/features/research'
+import { ChatContainer } from '@/features/chat'
 import './App.css'
-import type { LayoutMode, ChatMessage } from './types/research'
+import type { LayoutMode } from '@/shared/types'
+import type { ChatMessage } from '@/features/chat/types/chat.types'
 
 function App() {
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('centered')

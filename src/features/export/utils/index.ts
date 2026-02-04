@@ -1,0 +1,1 @@
+export { downloadResearchPDF } from './generatePDF';

@@ -1,8 +1,35 @@
 {
-  "name": "ai-research-topic",
-  "private": true,
-  "version": "0.0.0",
+  "name": "ai-research-assistant",
+  "private": false,
+  "version": "1.0.0",
   "type": "module",
+  "description": "An AI-powered research assistant that provides comprehensive research reports with interactive visualizations",
+  "keywords": [
+    "ai",
+    "research",
+    "assistant",
+    "gemini",
+    "react",
+    "typescript",
+    "vite",
+    "tailwindcss",
+    "visualization",
+    "markdown"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mamik153/AI-Research-Assistant.git"
+  },
+  "homepage": "https://github.com/Mamik153/AI-Research-Assistant#readme",
+  "bugs": {
+    "url": "https://github.com/Mamik153/AI-Research-Assistant/issues"
+  },
+  "license": "MIT",
+  "author": "Mamik153",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
