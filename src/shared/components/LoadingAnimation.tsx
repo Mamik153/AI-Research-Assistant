@@ -1,9 +1,13 @@
-import React, { useRef } from 'react';
+import React, { useRef } from "react";
 
-const LoadingAnimation: React.FC<{ topic?: string; message?: string, chainOfThought?: string[] }> = ({ topic, message, chainOfThought }) => {
+const LoadingAnimation: React.FC<{
+  topic?: string;
+  message?: string;
+  chainOfThought?: string[];
+}> = ({ topic, message, chainOfThought }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
- /* useEffect(() => {
+  /* useEffect(() => {
     if (!containerRef.current) return;
 
     // Prevent double initialization (React StrictMode)
@@ -134,7 +138,7 @@ const LoadingAnimation: React.FC<{ topic?: string; message?: string, chainOfThou
       <div ref={containerRef} className="w-[300px] h-[300px]" />
 
       {/* Current Loading Status Message */}
-      <p className="text-xl font-medium text-white mt-4 text-center max-w-md px-4 min-h-[3rem]">
+      <p className="text-xl font-medium text-black mt-4 text-center max-w-md px-4 min-h-[3rem]">
         {message || `Synthesizing Knowledge about ${topic}...`}
       </p>
 
@@ -146,10 +150,10 @@ const LoadingAnimation: React.FC<{ topic?: string; message?: string, chainOfThou
             {chainOfThought.map((step, index) => (
               <div
                 key={index}
-                className={`text-sm text-gray-300 font-mono transition-all duration-500 animate-slide-up bg-white/5 px-3 py-2 rounded-lg`}
+                className={`text-sm text-gray-500 font-mono transition-all duration-500 animate-slide-up bg-white/5 px-3 py-2 rounded-lg`}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <span className="mr-2 text-blue-300">➜</span>
+                <span className="mr-2 text-gray-500">➜</span>
                 {step}
               </div>
             ))}

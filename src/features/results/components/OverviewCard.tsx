@@ -1,4 +1,4 @@
-import type { OverviewSection } from '../types/result.types';
+import type { OverviewSection } from "../types/result.types";
 
 interface OverviewCardProps {
   overview: OverviewSection;
@@ -6,11 +6,15 @@ interface OverviewCardProps {
 
 export const OverviewCard = ({ overview }: OverviewCardProps) => {
   return (
-    <div className="rounded-2xl border border-gray-800 bg-gray-900/50 backdrop-blur-sm p-6 shadow-lg">
+    <div className="w-full mb-8">
       {overview.title && (
-        <h3 className="text-lg font-semibold text-white mb-3">{overview.title}</h3>
+        <h3 className="text-xl font-semibold text-black mb-3">
+          {overview.title}
+        </h3>
       )}
-      <p className="text-gray-300 leading-relaxed">{overview.content}</p>
+      <div className="bg-white/20 backdrop-blur-sm rounded-3xl p-6 text-lg text-gray-600 leading-relaxed shadow-sm">
+        <p>{overview.content}</p>
+      </div>
     </div>
   );
 };
