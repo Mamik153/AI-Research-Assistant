@@ -26,7 +26,18 @@ export const TimelineVertical = ({ events }: TimelineVerticalProps) => {
           aria-hidden
         />
         {events.map((evt, idx) => (
-          <div key={idx} className="flex items-center gap-4 pb-8 last:pb-0">
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{
+              duration: 0.5,
+              delay: idx * 0.1,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="flex items-center gap-4 pb-8 last:pb-0"
+          >
             {/* Track: dot centered vertically with this row's card */}
             <div className="w-8 flex-shrink-0 flex items-center justify-center self-stretch">
               <span className="relative flex size-3">
@@ -50,7 +61,7 @@ export const TimelineVertical = ({ events }: TimelineVerticalProps) => {
                 )}
               </div>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
     </motion.div>

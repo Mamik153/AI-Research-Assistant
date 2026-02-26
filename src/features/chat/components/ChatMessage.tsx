@@ -1,7 +1,7 @@
-import { memo } from 'react';
-import { motion } from 'motion/react';
-import type { ChatMessage as ChatMessageType } from '../types/chat.types';
-import ResearchResponseData from '@/shared/components/ResearchResponseData';
+import { memo } from "react";
+import { motion } from "motion/react";
+import type { ChatMessage as ChatMessageType } from "../types/chat.types";
+import ResearchResponseData from "@/shared/components/ResearchResponseData";
 
 interface ChatMessageProps {
   message: ChatMessageType;
@@ -9,22 +9,25 @@ interface ChatMessageProps {
   onReset?: () => void;
 }
 
-export const ChatMessage = memo(function ChatMessage({ message, onReset }: ChatMessageProps) {
+export const ChatMessage = memo(function ChatMessage({
+  message,
+  onReset,
+}: ChatMessageProps) {
   const formatTimestamp = (timestamp: string) => {
     const date = new Date(timestamp);
-    return date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
+    return date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
     });
   };
 
-  if (message.type === 'user') {
+  if (message.type === "user") {
     return (
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
         className="flex justify-end mb-3 sm:mb-4 hidden"
       >
         <div className="flex flex-col items-end max-w-[95%] sm:max-w-[85%] md:max-w-[70%]">
@@ -44,7 +47,7 @@ export const ChatMessage = memo(function ChatMessage({ message, onReset }: ChatM
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: 'easeOut', delay: 0.05 }}
+      transition={{ duration: 0.3, ease: "easeOut", delay: 0.05 }}
       className="flex justify-start mb-3 sm:mb-4"
     >
       <div className="flex flex-col items-start max-w-[95%] sm:max-w-[90%] md:max-w-[85%] w-full mx-auto">
@@ -56,9 +59,6 @@ export const ChatMessage = memo(function ChatMessage({ message, onReset }: ChatM
             resetJob={onReset ?? (() => {})}
           />
         </div>
-        {/* <span className="text-xs text-gray-400 mt-1">
-          {formatTimestamp(message.timestamp)}
-        </span> */}
       </div>
     </motion.div>
   );

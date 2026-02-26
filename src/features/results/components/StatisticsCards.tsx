@@ -20,8 +20,16 @@ export const StatisticsCards = ({ statistics }: StatisticsCardsProps) => {
       </h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {statistics.map((stat, idx) => (
-          <div
+          <motion.div
             key={idx}
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{
+              duration: 0.5,
+              delay: idx * 0.1,
+              ease: [0.16, 1, 0.3, 1],
+            }}
             className="p-4 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 transition shadow-sm"
           >
             <div className="text-2xl font-bold text-white/90 mb-2">
@@ -36,7 +44,7 @@ export const StatisticsCards = ({ statistics }: StatisticsCardsProps) => {
                 Source: {stat.source}
               </div>
             )}
-          </div>
+          </motion.div>
         ))}
       </div>
     </motion.div>

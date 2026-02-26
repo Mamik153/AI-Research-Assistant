@@ -24,7 +24,15 @@ export function ChatContainer({
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     if (bottomRef.current && isVisible) {
-      bottomRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+      // Use a small timeout to allow the DOM to render the new message before scrolling
+      setTimeout(() => {
+        if (bottomRef.current) {
+          bottomRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "end",
+          });
+        }
+      }, 50);
     }
   }, [messages.length, isVisible]);
 
@@ -39,7 +47,7 @@ export function ChatContainer({
       transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}
       className={`h-full ${className}`}
     >
-      <ScrollArea className="h-full px-3 py-4 sm:px-4 sm:py-6">
+      <ScrollArea className="h-full px-3 py-4 sm:px-4 sm:py-6 sm:pb-0">
         {messages.length === 0 ? null : (
           <div className="max-w-4xl mx-auto">
             {messages.map((message, index) => (

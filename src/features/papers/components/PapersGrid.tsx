@@ -3,6 +3,7 @@ import { useState } from "react";
 import type { ResearchPaper } from "../types/paper.types";
 import { PaperCard } from "./PaperCard";
 import { AbstractModal } from "@/shared/components";
+import { motion } from "motion/react";
 
 interface PapersGridProps {
   papers: ResearchPaper[];
@@ -35,12 +36,24 @@ export const PapersGrid = ({ papers }: PapersGridProps) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {papers.map((paper, idx) => (
-          <PaperCard
+          <motion.div
             key={idx}
-            paper={paper}
-            index={idx}
-            onReadAbstract={() => setSelectedPaperIndex(idx)}
-          />
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{
+              duration: 0.5,
+              delay: idx * 0.1,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="h-full"
+          >
+            <PaperCard
+              paper={paper}
+              index={idx}
+              onReadAbstract={() => setSelectedPaperIndex(idx)}
+            />
+          </motion.div>
         ))}
       </div>
 
