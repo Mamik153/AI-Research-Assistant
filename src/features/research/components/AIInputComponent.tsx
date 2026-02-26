@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
-import { motion } from 'motion/react';
-import { MicrophoneIcon, ArrowUpIcon } from '@/shared/components/icons';
+import { useState, useRef, useEffect } from "react";
+import { motion } from "motion/react";
+import { MicrophoneIcon, ArrowUpIcon } from "@/shared/components/icons";
 
 interface AIInputComponentProps {
   onSubmit: (topic: string) => void;
@@ -56,10 +56,10 @@ interface SpeechRecognitionAlternative {
 
 interface WindowWithSpeechRecognition extends Window {
   SpeechRecognition?: {
-    new(): SpeechRecognition;
+    new (): SpeechRecognition;
   };
   webkitSpeechRecognition?: {
-    new(): SpeechRecognition;
+    new (): SpeechRecognition;
   };
 }
 
@@ -68,13 +68,13 @@ export function AIInputComponent({
   isLoading,
   disabled,
   onMicClick,
-  placeholder = 'Ask anything...',
-  className = '',
+  placeholder = "Ask anything...",
+  className = "",
   isAtBottom = false,
   onPositionTransitionComplete,
 }: AIInputComponentProps) {
   // State management
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState("");
   const [isAnimating, setIsAnimating] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [isMultiLine, setIsMultiLine] = useState(false);
@@ -88,12 +88,14 @@ export function AIInputComponent({
 
   // Ref for speech recognition
   const recognitionRef = useRef<SpeechRecognition | null>(null);
-  const finalTranscriptRef = useRef<string>('');
+  const finalTranscriptRef = useRef<string>("");
 
   // Check for speech recognition support and initialize
   useEffect(() => {
     const windowWithSpeech = window as unknown as WindowWithSpeechRecognition;
-    const SpeechRecognition = windowWithSpeech.SpeechRecognition || windowWithSpeech.webkitSpeechRecognition;
+    const SpeechRecognition =
+      windowWithSpeech.SpeechRecognition ||
+      windowWithSpeech.webkitSpeechRecognition;
 
     if (SpeechRecognition) {
       setIsSpeechSupported(true);
@@ -101,7 +103,7 @@ export function AIInputComponent({
 
       recognition.continuous = true;
       recognition.interimResults = true;
-      recognition.lang = 'en-US';
+      recognition.lang = "en-US";
 
       recognition.onstart = () => {
         setIsRecording(true);
@@ -110,18 +112,18 @@ export function AIInputComponent({
         if (textareaRef.current) {
           finalTranscriptRef.current = textareaRef.current.value.trim();
         } else {
-          finalTranscriptRef.current = '';
+          finalTranscriptRef.current = "";
         }
       };
 
       recognition.onresult = (event: SpeechRecognitionEvent) => {
-        let interimTranscript = '';
-        let finalTranscript = '';
+        let interimTranscript = "";
+        let finalTranscript = "";
 
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript;
           if (event.results[i].isFinal) {
-            finalTranscript += transcript + ' ';
+            finalTranscript += transcript + " ";
           } else {
             interimTranscript += transcript;
           }
@@ -143,19 +145,21 @@ export function AIInputComponent({
       };
 
       recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-        console.error('Speech recognition error:', event.error);
+        console.error("Speech recognition error:", event.error);
         setIsRecording(false);
 
         // Handle specific errors
-        if (event.error === 'no-speech') {
+        if (event.error === "no-speech") {
           // User didn't speak, just stop recording
           setIsRecording(false);
-        } else if (event.error === 'audio-capture') {
+        } else if (event.error === "audio-capture") {
           // No microphone found
-          alert('No microphone found. Please check your microphone settings.');
-        } else if (event.error === 'not-allowed') {
+          alert("No microphone found. Please check your microphone settings.");
+        } else if (event.error === "not-allowed") {
           // Permission denied
-          alert('Microphone permission denied. Please enable microphone access in your browser settings.');
+          alert(
+            "Microphone permission denied. Please enable microphone access in your browser settings.",
+          );
         }
       };
 
@@ -187,8 +191,8 @@ export function AIInputComponent({
     if (textareaRef.current && baseHeightRef.current === 0) {
       // Temporarily disable transition to get accurate measurement
       const originalTransition = textareaRef.current.style.transition;
-      textareaRef.current.style.transition = 'none';
-      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.transition = "none";
+      textareaRef.current.style.height = "auto";
 
       // Force reflow to ensure accurate measurement
       textareaRef.current.offsetHeight;
@@ -200,7 +204,7 @@ export function AIInputComponent({
 
   // Determine multi-line state based on character count (20 characters threshold)
   useEffect(() => {
-    const hasLineBreak = value.includes('\n');
+    const hasLineBreak = value.includes("\n");
     const shouldBeMultiLine = value.length >= 20 || hasLineBreak;
 
     if (shouldBeMultiLine !== isMultiLine) {
@@ -214,10 +218,10 @@ export function AIInputComponent({
     if (textareaRef.current) {
       // Temporarily disable transition for accurate measurement
       const originalTransition = textareaRef.current.style.transition;
-      textareaRef.current.style.transition = 'none';
+      textareaRef.current.style.transition = "none";
 
       // Reset height to get correct scrollHeight
-      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = "auto";
 
       // Force reflow
       textareaRef.current.offsetHeight;
@@ -240,8 +244,8 @@ export function AIInputComponent({
       requestAnimationFrame(() => {
         if (textareaRef.current) {
           const originalTransition = textareaRef.current.style.transition;
-          textareaRef.current.style.transition = 'none';
-          textareaRef.current.style.height = 'auto';
+          textareaRef.current.style.transition = "none";
+          textareaRef.current.style.height = "auto";
           textareaRef.current.offsetHeight; // Force reflow
 
           const scrollHeight = textareaRef.current.scrollHeight;
@@ -262,7 +266,7 @@ export function AIInputComponent({
   // Handle keyboard interactions
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     // Enter without Shift submits the message
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSubmit();
     }
@@ -272,7 +276,9 @@ export function AIInputComponent({
   // Handle button clicks
   const handleMicClick = () => {
     if (!isSpeechSupported) {
-      alert('Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.');
+      alert(
+        "Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.",
+      );
       onMicClick?.();
       return;
     }
@@ -293,7 +299,7 @@ export function AIInputComponent({
           recognitionRef.current.start();
         } catch (error) {
           // Recognition might already be starting
-          console.error('Error starting speech recognition:', error);
+          console.error("Error starting speech recognition:", error);
         }
       }
     }
@@ -318,8 +324,8 @@ export function AIInputComponent({
 
       // Clear textarea and reset states after animation completes
       setTimeout(() => {
-        setValue('');
-        finalTranscriptRef.current = '';
+        setValue("");
+        finalTranscriptRef.current = "";
         setIsAnimating(false);
         setIsMultiLine(false);
       }, 300);
@@ -339,10 +345,10 @@ export function AIInputComponent({
   const getPositionStyles = () => {
     if (!isMounted) {
       return {
-        position: 'absolute' as const,
-        left: '50%',
-        top: '50%',
-        transform: 'translate(-50%, -50%) translateY(8px)',
+        position: "absolute" as const,
+        left: "50%",
+        top: "50%",
+        transform: "translate(-50%, -50%) translateY(8px)",
         opacity: 0,
       };
     }
@@ -350,104 +356,119 @@ export function AIInputComponent({
     if (isAtBottom) {
       // Bottom position for chat mode - responsive padding
       return {
-        position: 'fixed' as const,
-        left: '50%',
-        bottom: '16px',
-        transform: 'translateX(-50%)',
-        transition: 'all 500ms cubic-bezier(0.4, 0, 0.2, 1)',
+        position: "fixed" as const,
+        left: "50%",
+        bottom: "16px",
+        transform: "translateX(-50%)",
+        transition: "all 500ms cubic-bezier(0.4, 0, 0.2, 1)",
       };
     }
 
     // Centered position for initial state
     return {
-      position: 'absolute' as const,
-      left: '50%',
-      top: '50%',
-      transform: 'translate(-50%, -50%)',
-      transition: 'all 500ms cubic-bezier(0.4, 0, 0.2, 1)',
+      position: "absolute" as const,
+      left: "50%",
+      top: "50%",
+      transform: "translate(-50%, -50%)",
+      transition: "all 500ms cubic-bezier(0.4, 0, 0.2, 1)",
     };
   };
 
   return (
-    <div
-      ref={containerRef}
-      className={`z-10 w-[90%] sm:w-[80%] md:w-full max-w-sm md:max-w-2xl px-3 sm:px-4 rounded-3xl bg-white shadow-lg ${isMounted ? 'opacity-100' : 'opacity-0'
+    <div ref={containerRef}>
+      <div
+        className={`z-10 w-[90%] sm:w-[80%] md:w-full max-w-sm md:max-w-2xl px-3 sm:px-4 rounded-3xl bg-white shadow-lg ${
+          isMounted ? "opacity-100" : "opacity-0"
         } ${className}`}
-      style={{
-        ...getPositionStyles(),
-        willChange: isAtBottom ? 'auto' : 'transform, opacity'
-      }}
-    >
-      <motion.div
-        className="relative p-4 flex items-center"
-        animate={{
-          paddingBottom: isMultiLine ? '56px' : '16px'
-        }}
-        transition={{
-          duration: 0.2,
-          ease: 'easeOut'
+        style={{
+          ...getPositionStyles(),
+          willChange: isAtBottom ? "auto" : "transform, opacity",
         }}
       >
-        {/* Textarea wrapper - expands when buttons are absolutely positioned */}
-        <div className="flex-1 pr-2" style={{ minWidth: 0 }}>
-          <textarea
-            ref={textareaRef}
-            value={value}
-            onChange={handleTextChange}
-            onKeyDown={handleKeyDown}
-            placeholder={placeholder}
-            aria-label="Message input"
-            className="w-full resize-none rounded-md py-2 px-[15px] outline-none overflow-y-auto focus-visible:ring-0 focus-visible:ring-none focus-visible:ring-offset-0 disabled:opacity-50 disabled:cursor-not-allowed text-black"
-            style={{
-              maxHeight: '100px',
-              transition: 'height 200ms ease-out'
-            }}
-            rows={1}
-            disabled={isLoading || disabled}
-          />
-        </div>
-
-        {/* Action buttons group - positioned at bottom-right */}
         <motion.div
-          className={`flex gap-2 shrink-0 ${isMultiLine ? 'absolute' : 'relative'}`}
+          className="relative p-4 flex items-center"
           animate={{
-            bottom: isMultiLine ? '16px' : 'auto',
-            right: isMultiLine ? '16px' : 'auto'
+            paddingBottom: isMultiLine ? "56px" : "16px",
           }}
           transition={{
-            duration: 0,
-            ease: 'easeOut'
+            duration: 0.2,
+            ease: "easeOut",
           }}
         >
-          {/* MicrophoneButton - min 44x44px for touch */}
-          <button
-            onClick={handleMicClick}
-            className={`flex min-w-[44px] min-h-[44px] size-11 items-center justify-center rounded-full p-1 transition-all duration-200 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${isRecording
-              ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse'
-              : 'bg-gray-100 hover:bg-gray-200 text-black'
-              }`}
-            aria-label={isRecording ? 'Stop voice input' : 'Start voice input'}
-            aria-pressed={isRecording}
-            type="button"
-            disabled={isLoading || disabled || !isSpeechSupported}
-            title={!isSpeechSupported ? 'Speech recognition not supported' : isRecording ? 'Stop recording' : 'Start voice input'}
-          >
-            <MicrophoneIcon className="w-5 h-5" />
-          </button>
+          {/* Textarea wrapper - expands when buttons are absolutely positioned */}
+          <div className="flex-1 pr-2" style={{ minWidth: 0 }}>
+            <textarea
+              ref={textareaRef}
+              value={value}
+              onChange={handleTextChange}
+              onKeyDown={handleKeyDown}
+              placeholder={placeholder}
+              aria-label="Message input"
+              className="w-full resize-none rounded-md py-2 px-[15px] outline-none overflow-y-auto focus-visible:ring-0 focus-visible:ring-none focus-visible:ring-offset-0 disabled:opacity-50 disabled:cursor-not-allowed text-black"
+              style={{
+                maxHeight: "100px",
+                transition: "height 200ms ease-out",
+              }}
+              rows={1}
+              disabled={isLoading || disabled}
+            />
+          </div>
 
-          {/* SubmitButton with dark background - min 44x44px for touch */}
-          <button
-            onClick={handleSubmit}
-            className={`flex min-w-[44px] min-h-[44px] size-11 items-center justify-center rounded-full p-1 transition-all duration-200 bg-[#121212] text-white hover:bg-[#2a2a2a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${isAnimating ? 'scale-90 rotate-90' : 'hover:scale-105 rotate-0'
-              }`}
-            aria-label="Submit message"
-            type="button"
-            disabled={!value.trim() || isLoading || disabled}
+          {/* Action buttons group - positioned at bottom-right */}
+          <motion.div
+            className={`flex gap-2 shrink-0 ${isMultiLine ? "absolute" : "relative"}`}
+            animate={{
+              bottom: isMultiLine ? "16px" : "auto",
+              right: isMultiLine ? "16px" : "auto",
+            }}
+            transition={{
+              duration: 0,
+              ease: "easeOut",
+            }}
           >
-            <ArrowUpIcon className="w-5 h-5" />
-          </button>
+            {/* MicrophoneButton - min 44x44px for touch */}
+            <button
+              onClick={handleMicClick}
+              className={`flex min-w-[44px] min-h-[44px] size-11 items-center justify-center rounded-full p-1 transition-all duration-200 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+                isRecording
+                  ? "bg-red-500 hover:bg-red-600 text-white animate-pulse"
+                  : "bg-gray-100 hover:bg-gray-200 text-black"
+              }`}
+              aria-label={
+                isRecording ? "Stop voice input" : "Start voice input"
+              }
+              aria-pressed={isRecording}
+              type="button"
+              disabled={isLoading || disabled || !isSpeechSupported}
+              title={
+                !isSpeechSupported
+                  ? "Speech recognition not supported"
+                  : isRecording
+                    ? "Stop recording"
+                    : "Start voice input"
+              }
+            >
+              <MicrophoneIcon className="w-5 h-5" />
+            </button>
+
+            {/* SubmitButton with dark background - min 44x44px for touch */}
+            <button
+              onClick={handleSubmit}
+              className={`flex min-w-[44px] min-h-[44px] size-11 items-center justify-center rounded-full p-1 transition-all duration-200 bg-[#121212] text-white hover:bg-[#2a2a2a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+                isAnimating ? "scale-90 rotate-90" : "hover:scale-105 rotate-0"
+              }`}
+              aria-label="Submit message"
+              type="button"
+              disabled={!value.trim() || isLoading || disabled}
+            >
+              <ArrowUpIcon className="w-5 h-5" />
+            </button>
+          </motion.div>
         </motion.div>
-      </motion.div>
+      </div>
+      <p>
+        SlickResearch can make mistakes. Please verify important information.
+      </p>
     </div>
   );
 }
