@@ -81,8 +81,13 @@ const renderMarkdownContent = (content: string) => {
       flushList();
       const level = line.match(/^#+/)?.[0].length || 1;
       const text = line.replace(/^#+\s*/, "");
-      const HeaderTag =
-        `h${Math.min(level + 2, 6)}` as keyof JSX.IntrinsicElements;
+      const HeaderTag = `h${Math.min(level + 2, 6)}` as
+        | "h1"
+        | "h2"
+        | "h3"
+        | "h4"
+        | "h5"
+        | "h6";
 
       elements.push(
         <HeaderTag
@@ -247,10 +252,7 @@ const renderInlineMarkdown = (text: string): (string | JSX.Element)[] => {
 /**
  * MarkdownResearchResult component for displaying completed research reports (Legacy)
  */
-export const MarkdownResearchResult = ({
-  result,
-  onNewResearch,
-}: ResearchResultProps) => {
+export const MarkdownResearchResult = ({ result }: ResearchResultProps) => {
   if (!result || !result.report) {
     return null; // Don't render if no report
   }
@@ -331,7 +333,7 @@ export const MarkdownResearchResult = ({
           </div>
           <div className="research-result__report-content-footer mt-2 gap-2 flex items-center">
             <button
-              onClick={onNewResearch}
+              onClick={() => window.location.reload()}
               className="research-result__report-content-footer-btn p-2 rounded-md hover:bg-gray-700/20"
             >
               <BadgePlus className="w-4 h-4" />

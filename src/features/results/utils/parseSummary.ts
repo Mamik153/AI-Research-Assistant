@@ -225,11 +225,15 @@ export function parseSummary(summary: string | undefined): ParsedSummary | null 
     const key_insights = ensureStringArray(parsed.key_insights);
     const generated_diagrams = ensureStringArray(parsed.generated_diagrams);
     const structured_sections = parseStructuredSections(parsed.structured_sections);
+    const section_confidence = parsed.section_confidence as Record<string, number> | undefined;
+    const section_images = parsed.section_images as Record<string, string[]> | null | undefined;
     return {
       summary: innerSummary,
       key_insights,
       generated_diagrams,
       structured_sections,
+      section_confidence,
+      section_images,
     };
   } catch {
     return null;
@@ -244,12 +248,16 @@ export function buildParsedSummaryFromFlat(
   summary: string | undefined,
   key_insights: string[] | undefined,
   generated_diagrams: string[] | undefined,
-  structured_sections: unknown
+  structured_sections: unknown,
+  section_confidence?: Record<string, number>,
+  section_images?: Record<string, string[]> | null
 ): ParsedSummary {
   return {
     summary: summary ?? '',
     key_insights: ensureStringArray(key_insights),
     generated_diagrams: ensureStringArray(generated_diagrams),
     structured_sections: parseStructuredSections(structured_sections),
+    section_confidence,
+    section_images,
   };
 }

@@ -1,11 +1,19 @@
 import type { TimelineEvent } from "../types/result.types";
 import { motion } from "motion/react";
 
+import { SectionMedia } from "./SectionMedia";
+
 interface TimelineVerticalProps {
   events: TimelineEvent[];
+  confidence?: number;
+  images?: string[];
 }
 
-export const TimelineVertical = ({ events }: TimelineVerticalProps) => {
+export const TimelineVertical = ({
+  events,
+  confidence,
+  images,
+}: TimelineVerticalProps) => {
   if (!events.length) return null;
 
   return (
@@ -18,6 +26,7 @@ export const TimelineVertical = ({ events }: TimelineVerticalProps) => {
       <h3 className="text-xl font-semibold bg-gradient-to-r from-gray-100 to-gray-400 bg-clip-text text-transparent mb-4 flex items-center gap-2">
         Timeline
       </h3>
+      <SectionMedia confidence={confidence} images={images} />
       <div className="relative">
         {/* Full-height line through center of track (16px = center of w-8) */}
         <div

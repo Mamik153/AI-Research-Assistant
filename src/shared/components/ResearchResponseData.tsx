@@ -9,14 +9,12 @@ interface ResearchResponseDataProps {
   isVisible: boolean;
   currentJob: ResearchJob | null;
   result: ResearchResultType | null;
-  resetJob: () => void;
 }
 
 const ResearchResponseData = ({
   isVisible,
   currentJob,
   result,
-  resetJob,
 }: ResearchResponseDataProps) => {
   // Don't render anything if not visible
   if (!isVisible) {
@@ -39,23 +37,17 @@ const ResearchResponseData = ({
                 {currentJob.message ||
                   "An unexpected error occurred during research generation."}
               </div>
-              {resetJob && (
-                <button
-                  className="mt-3 ml-auto text-sm flex bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-xl transition-colors duration-200"
-                  onClick={resetJob}
-                >
-                  Try Again
-                </button>
-              )}
+              <button
+                className="mt-3 ml-auto text-sm flex bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-xl transition-colors duration-200"
+                onClick={() => window.location.reload()}
+              >
+                Try Again
+              </button>
             </div>
           ) : result ? (
-            <ResearchResult result={result} onNewResearch={resetJob} />
+            <ResearchResult result={result} />
           ) : (
-            <LoadingAnimation
-              topic={currentJob?.topic || ""}
-              message={currentJob?.message}
-              chainOfThought={currentJob?.chainOfThought}
-            />
+            <LoadingAnimation chainOfThought={currentJob?.chainOfThought} />
           )}
         </div>
       )}

@@ -1,11 +1,19 @@
 import type { OverviewSection } from "../types/result.types";
 import { motion } from "motion/react";
 
+import { SectionMedia } from "./SectionMedia";
+
 interface OverviewCardProps {
   overview: OverviewSection;
+  confidence?: number;
+  images?: string[];
 }
 
-export const OverviewCard = ({ overview }: OverviewCardProps) => {
+export const OverviewCard = ({
+  overview,
+  confidence,
+  images,
+}: OverviewCardProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -18,6 +26,7 @@ export const OverviewCard = ({ overview }: OverviewCardProps) => {
           {overview.title}
         </h3>
       )}
+      <SectionMedia confidence={confidence} images={images} />
       <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-6 text-lg text-gray-300 leading-relaxed shadow-sm">
         <p>{overview.content}</p>
       </div>

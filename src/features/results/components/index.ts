@@ -15,3 +15,4 @@ export { TimelineVertical } from './TimelineVertical';
 export { ComparisonRadarChart } from './ComparisonRadarChart';
 export { KeyConceptsNetwork } from './KeyConceptsNetwork';
 export { default as FlashCards } from './FlashCards';
+export { SectionMedia } from './SectionMedia';

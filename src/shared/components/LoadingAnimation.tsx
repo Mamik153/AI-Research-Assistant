@@ -1,13 +1,10 @@
-import { Loader } from "lucide-react";
 import React, { useRef } from "react";
 import { ShimmeringText } from "../components/ui/shimmering-text";
 import { Orb } from "../components/ui/orb";
 
 const LoadingAnimation: React.FC<{
-  topic?: string;
-  message?: string;
   chainOfThought?: string[];
-}> = ({ topic, message, chainOfThought }) => {
+}> = ({ chainOfThought }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   /* useEffect(() => {
@@ -147,9 +144,9 @@ const LoadingAnimation: React.FC<{
       />
 
       {/* Current Loading Status Message */}
-      <p className="text-xl font-medium text-white mt-4 text-center max-w-md px-4 min-h-[3rem]">
+      {/* <p className="text-xl font-medium text-white mt-4 text-center max-w-md px-4 min-h-[3rem]">
         {message || `Synthesizing Knowledge about ${topic}...`}
-      </p>
+      </p> */}
 
       {/* Chain of Thought Stream */}
       {chainOfThought && chainOfThought.length > 0 && (
@@ -158,6 +155,7 @@ const LoadingAnimation: React.FC<{
             text={chainOfThought[chainOfThought.length - 1].split("] ")[1]}
             duration={3}
             color="#bebebeff"
+            className="text-xl text-center"
             //shimmerColor="#3B82F6"
           />
         </div>

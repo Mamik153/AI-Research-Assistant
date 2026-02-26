@@ -1,12 +1,18 @@
 import type { KeyConcept } from "../types/result.types";
 import { motion } from "motion/react";
 
+import { SectionMedia } from "./SectionMedia";
+
 interface KeyConceptsNetworkProps {
   keyConcepts: KeyConcept[];
+  confidence?: number;
+  images?: string[];
 }
 
 export const KeyConceptsNetwork = ({
   keyConcepts,
+  confidence,
+  images,
 }: KeyConceptsNetworkProps) => {
   if (!keyConcepts.length) return null;
 
@@ -20,6 +26,7 @@ export const KeyConceptsNetwork = ({
       <h3 className="text-xl font-semibold bg-gradient-to-r from-gray-100 to-gray-400 bg-clip-text text-transparent mb-4 flex items-center gap-2">
         Key Concepts
       </h3>
+      <SectionMedia confidence={confidence} images={images} />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {keyConcepts.map((concept, idx) => (
           <div

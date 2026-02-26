@@ -82,6 +82,8 @@ export interface ParsedSummary {
   key_insights: string[];
   generated_diagrams: string[];
   structured_sections: StructuredSections;
+  section_confidence?: Record<string, number>;
+  section_images?: Record<string, string[]> | null;
 }
 
 export interface ResearchResultProps {
@@ -94,6 +96,8 @@ export interface ResearchResultProps {
       key_insights: string[];
       generated_diagrams: string[];
       structured_sections: StructuredSections;
+      section_confidence?: Record<string, number>;
+      section_images?: Record<string, string[]> | null;
     };
     papers?: Array<{
       title: string;
@@ -108,6 +112,7 @@ export interface ResearchResultProps {
     completedAt: string;
     topic: string;
     tags?: string[];
+    sectionConfidence?: Record<string, number>;
+    sectionImages?: Record<string, string[]> | null;
   } | null;
-  onNewResearch: () => void;
 }

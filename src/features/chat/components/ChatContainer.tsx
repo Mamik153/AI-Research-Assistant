@@ -10,14 +10,12 @@ interface ChatContainerProps {
   className?: string;
   isTransitioning?: boolean;
   topic?: string;
-  onReset?: () => void;
 }
 
 export function ChatContainer({
   messages,
   isVisible,
   className = "",
-  onReset,
 }: ChatContainerProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -55,7 +53,6 @@ export function ChatContainer({
                 key={message.id}
                 message={message}
                 isLatest={index === messages.length - 1}
-                onReset={onReset}
               />
             ))}
             <div ref={bottomRef} />

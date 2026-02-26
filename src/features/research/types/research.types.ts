@@ -23,6 +23,8 @@ export interface ResearchResultResponse {
   completed_at: string;
   topic: string;
   message?: string;
+  section_confidence?: Record<string, number>;
+  section_images?: Record<string, string[]> | null;
 }
 
 // Application State Types
@@ -48,6 +50,8 @@ export interface ResearchResult {
   completedAt: string;
   topic: string;
   tags?: string[];
+  sectionConfidence?: Record<string, number>;
+  sectionImages?: Record<string, string[]> | null;
 }
 
 // Component Props Interfaces

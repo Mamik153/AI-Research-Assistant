@@ -1,12 +1,18 @@
 import type { ApplicationItem } from "../types/result.types";
 import { motion } from "motion/react";
 
+import { SectionMedia } from "./SectionMedia";
+
 interface ApplicationsSectionProps {
   applications: ApplicationItem[];
+  confidence?: number;
+  images?: string[];
 }
 
 export const ApplicationsSection = ({
   applications,
+  confidence,
+  images,
 }: ApplicationsSectionProps) => {
   if (!applications.length) return null;
 
@@ -20,6 +26,7 @@ export const ApplicationsSection = ({
       <h3 className="text-xl font-semibold bg-gradient-to-r from-gray-100 to-gray-400 bg-clip-text text-transparent mb-4 flex items-center gap-2">
         Applications
       </h3>
+      <SectionMedia confidence={confidence} images={images} />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {applications.map((item, idx) => (
           <div

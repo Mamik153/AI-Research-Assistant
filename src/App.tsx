@@ -11,8 +11,7 @@ function App() {
   const [layoutMode, setLayoutMode] = useState<LayoutMode>("centered");
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
-  // Lift the research job state to App level
-  const { submitResearch, isLoading, error, currentJob, result, resetJob } =
+  const { submitResearch, isLoading, error, currentJob, result } =
     useResearchJob();
 
   // Handle research topic submission
@@ -47,13 +46,6 @@ function App() {
     setIsTransitioning(false);
   }, []);
 
-  // Reset research: clear job, messages, and return to centered layout so user can start fresh
-  const handleReset = useCallback(() => {
-    resetJob();
-    setChatMessages([]);
-    setLayoutMode("centered");
-  }, [resetJob]);
-
   // Once we have a job, transition is done — show chat (loading/result). Input is already hidden.
   useEffect(() => {
     if (currentJob) {
@@ -65,17 +57,17 @@ function App() {
   useEffect(() => {
     if (currentJob) {
       setChatMessages((prev) => {
-        // Check if assistant message already exists for this job
-        const existingIndex = prev.findIndex(
-          (m) =>
-            m.type === "assistant" && m.researchJob?.jobId === currentJob.jobId,
-        );
+        // Check if assistant message already exists
+        const existingIndex = prev.findIndex((m) => m.type === "assistant");
 
         const assistantMessage: ChatMessage = {
-          id: currentJob.jobId,
+          id: existingIndex >= 0 ? prev[existingIndex].id : currentJob.jobId,
           type: "assistant",
           content: "",
-          timestamp: currentJob.createdAt,
+          timestamp:
+            existingIndex >= 0
+              ? prev[existingIndex].timestamp
+              : currentJob.createdAt,
           researchJob: currentJob,
           researchResult: result || undefined,
         };
@@ -189,7 +181,6 @@ function App() {
             isTransitioning={isTransitioning}
             messages={chatMessages}
             isVisible={layoutMode === "chat"}
-            onReset={handleReset}
             className="h-full"
           />
         </div>

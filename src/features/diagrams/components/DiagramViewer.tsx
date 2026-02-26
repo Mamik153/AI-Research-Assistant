@@ -23,12 +23,24 @@ const SCALE_STEP = 0.25;
  * e.g. -->|label|> B[...] (invalid TAGEND) -> -->|label| B[...] (valid)
  */
 function sanitizeMermaidCode(code: string): string {
-  return (
-    code
-      .trim()
-      // Fix edge label with extra ">": |...|> -> |...| (so arrow is --> not -->|>)
-      .replace(/\|\s*>\s*/g, "| ")
-  );
+  const sanitized = code
+    .trim()
+    // Fix edge label with extra ">": |...|> -> |...| (so arrow is --> not -->|>)
+    .replace(/\|\s*>\s*/g, "| ")
+    // Replace non-standard hyphens/dashes that break Mermaid parsing (e.g. U+2011)
+    .replace(/[\u2011\u2013\u2014]/g, "-")
+    // Replace smart quotes with standard quotes
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/[\u201C\u201D]/g, '"')
+    // Replace semicolons with newlines, as Mermaid often fails parsing single-line graphs
+    .replace(/;/g, "\n");
+
+  // Split by newline and trim each line's leading/trailing spaces, then rejoin
+  return sanitized
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .join("\n");
 }
 
 /** Shorten long Mermaid parse errors for display */
@@ -179,10 +191,10 @@ export const DiagramViewer = ({
       </h3>
       <div
         ref={containerRef}
-        className={`rounded-3xl bg-gray-white/20 backdrop-blur-sm overflow-hidden ${className}`}
+        className={`rounded-3xl bg-white/10 backdrop-blur-sm overflow-hidden ${className}`}
       >
         <div
-          className="relative overflow-hidden bg-white/50 flex items-center justify-center min-h-[350px] p-4"
+          className="relative overflow-hidden bg-white/10 flex items-center justify-center min-h-[350px] p-4"
           onMouseDown={handleMouseDown}
           onWheel={handleWheel}
           style={{ cursor: isDragging ? "grabbing" : "grab" }}

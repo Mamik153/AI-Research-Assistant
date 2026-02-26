@@ -5,7 +5,6 @@ import {
   PolarAngleAxis,
   PolarRadiusAxis,
   Radar,
-  Legend,
   ResponsiveContainer,
   Tooltip,
   BarChart,
@@ -18,8 +17,12 @@ import { BarChart2, Radar as RadarIcon, Table2 } from "lucide-react";
 import type { ComparisonData } from "../types/result.types";
 import { motion } from "motion/react";
 
+import { SectionMedia } from "./SectionMedia";
+
 interface ComparisonRadarChartProps {
   comparisonData: ComparisonData;
+  confidence?: number;
+  images?: string[];
 }
 
 type ChartView = "radar" | "bar" | "table";
@@ -48,25 +51,40 @@ function quantize(value: string): number {
   return 2;
 }
 
-interface BarTooltipProps {
+interface CustomTooltipProps {
   active?: boolean;
   payload?: Array<{ name: string; value: number; color: string }>;
   label?: string;
 }
 
-function BarChartTooltip({ active, payload, label }: BarTooltipProps) {
+function CustomChartTooltip({ active, payload, label }: CustomTooltipProps) {
   if (!active || !payload?.length || !label) return null;
   return (
-    <div className="rounded-lg bg-gray-200/80 backdrop-blur-lg px-3 py-2.5 shadow-xl">
-      <div className="text-sm font-medium text-gray-900 mb-2">{label}</div>
-      <div className="space-y-1">
+    <div className="rounded-xl border border-white/10 bg-[#0f1117]/90 backdrop-blur-xl p-4 shadow-2xl max-w-[320px]">
+      <div className="text-sm font-semibold text-white mb-3 border-b border-white/10 pb-2">
+        {label}
+      </div>
+      <div className="space-y-3">
         {payload.map((entry) => (
           <div
             key={entry.name}
-            className="flex items-center justify-between gap-4 text-sm"
+            className="flex items-start justify-between gap-4 text-sm"
           >
-            <span style={{ color: entry.color }}>{entry.name}</span>
-            <span className="text-gray-400 tabular-nums">{entry.value}</span>
+            <div className="flex items-start gap-2.5 mt-0.5">
+              <div
+                className="w-2 h-2 rounded-full shrink-0 mt-1.5"
+                style={{
+                  backgroundColor: entry.color,
+                  boxShadow: `0 0 8px ${entry.color}80`,
+                }}
+              />
+              <span className="text-gray-300 font-medium leading-snug">
+                {entry.name}
+              </span>
+            </div>
+            <span className="text-white font-semibold tabular-nums shrink-0 mt-0.5">
+              {entry.value}
+            </span>
           </div>
         ))}
       </div>
@@ -76,6 +94,8 @@ function BarChartTooltip({ active, payload, label }: BarTooltipProps) {
 
 export const ComparisonRadarChart = ({
   comparisonData,
+  confidence,
+  images,
 }: ComparisonRadarChartProps) => {
   const [view, setView] = useState<ChartView>("radar");
   const { criteria, items } = comparisonData;
@@ -125,6 +145,7 @@ export const ComparisonRadarChart = ({
           ))}
         </div>
       </div>
+      <SectionMedia confidence={confidence} images={images} />
 
       <div className="bg-white/5 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-sm">
         {view === "radar" && (
@@ -132,7 +153,7 @@ export const ComparisonRadarChart = ({
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart
                 data={data}
-                margin={{ top: 40, right: 50, bottom: 40, left: 50 }}
+                margin={{ top: 20, right: 30, bottom: 20, left: 30 }}
               >
                 <PolarGrid stroke="#9fa8b6ff" />
                 <PolarAngleAxis
@@ -157,30 +178,18 @@ export const ComparisonRadarChart = ({
                     strokeWidth={2}
                   />
                 ))}
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "#d9dadde3",
-                    borderRadius: "9px",
-                  }}
-                  labelStyle={{ color: "#303030ff" }}
-                />
-                <Legend
-                  wrapperStyle={{ color: "#ddddddff" }}
-                  formatter={(value) => (
-                    <span className="text-gray-500">{value}</span>
-                  )}
-                />
+                <Tooltip content={<CustomChartTooltip />} cursor={false} />
               </RadarChart>
             </ResponsiveContainer>
           </div>
         )}
 
         {view === "bar" && (
-          <div className="h-[360px] w-full min-h-0 overflow-x-auto">
+          <div className="h-[380px] w-full min-h-0 overflow-x-auto">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={data}
-                margin={{ top: 16, right: 16, bottom: 32, left: 8 }}
+                margin={{ top: 16, right: 16, bottom: 16, left: 8 }}
                 layout="vertical"
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
@@ -196,11 +205,9 @@ export const ComparisonRadarChart = ({
                   tick={{ fill: "#9ca3af", fontSize: 11 }}
                   tickLine={false}
                 />
-                <Tooltip content={<BarChartTooltip />} cursor={false} />
-                <Legend
-                  formatter={(value) => (
-                    <span className="text-gray-300">{value}</span>
-                  )}
+                <Tooltip
+                  content={<CustomChartTooltip />}
+                  cursor={{ fill: "rgba(255, 255, 255, 0.05)" }}
                 />
                 {items.map((item, idx) => (
                   <Bar
@@ -251,6 +258,31 @@ export const ComparisonRadarChart = ({
                 ))}
               </tbody>
             </table>
+          </div>
+        )}
+
+        {view !== "table" && (
+          <div className="mt-8 flex flex-wrap justify-center gap-x-3 gap-y-3">
+            {items.map((item, idx) => {
+              const color = COLORS[idx % COLORS.length];
+              return (
+                <div
+                  key={item.name}
+                  className="flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm transition-colors hover:bg-white/10 cursor-default shadow-sm max-w-full"
+                >
+                  <div
+                    className="w-2.5 h-2.5 rounded-full shadow-sm shrink-0"
+                    style={{
+                      backgroundColor: color,
+                      boxShadow: `0 0 8px ${color}80`,
+                    }}
+                  />
+                  <span className="text-xs font-medium text-gray-200 tracking-wide truncate">
+                    {item.name}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

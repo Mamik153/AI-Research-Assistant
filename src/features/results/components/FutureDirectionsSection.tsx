@@ -1,12 +1,18 @@
 import type { FutureDirection } from "../types/result.types";
 import { motion } from "motion/react";
 
+import { SectionMedia } from "./SectionMedia";
+
 interface FutureDirectionsSectionProps {
   futureDirections: FutureDirection[];
+  confidence?: number;
+  images?: string[];
 }
 
 export const FutureDirectionsSection = ({
   futureDirections,
+  confidence,
+  images,
 }: FutureDirectionsSectionProps) => {
   if (!futureDirections.length) return null;
 
@@ -20,6 +26,7 @@ export const FutureDirectionsSection = ({
       <h3 className="text-xl font-semibold bg-gradient-to-r from-gray-100 to-gray-400 bg-clip-text text-transparent mb-4 flex items-center gap-2">
         Future Directions
       </h3>
+      <SectionMedia confidence={confidence} images={images} />
       <div className="space-y-4">
         {futureDirections.map((item, idx) => (
           <div

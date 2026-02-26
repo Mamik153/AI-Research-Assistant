@@ -66,7 +66,9 @@ export const useResearchJob = (): UseResearchJobReturn => {
                                     resultResponse.summary,
                                     resultResponse.key_insights,
                                     resultResponse.generated_diagrams,
-                                    resultResponse.structured_sections
+                                    resultResponse.structured_sections,
+                                    resultResponse.section_confidence,
+                                    resultResponse.section_images
                                 )
                                 : undefined);
                             const summaryText = parsedSummary?.summary ?? resultResponse.summary;
@@ -76,6 +78,8 @@ export const useResearchJob = (): UseResearchJobReturn => {
                             const generatedDiagrams = parsedSummary?.generated_diagrams?.length
                                 ? parsedSummary.generated_diagrams
                                 : resultResponse.generated_diagrams;
+                            const sectionConfidence = parsedSummary?.section_confidence ?? resultResponse.section_confidence;
+                            const sectionImages = parsedSummary?.section_images ?? resultResponse.section_images;
                             const researchResult: ResearchResult = {
                                 jobId: resultResponse.jobId,
                                 report: resultResponse.report,
@@ -86,6 +90,8 @@ export const useResearchJob = (): UseResearchJobReturn => {
                                 generatedDiagrams,
                                 completedAt: resultResponse.completed_at || new Date().toISOString(),
                                 topic: prevJob.topic,
+                                sectionConfidence,
+                                sectionImages,
                             };
                             //console.log('Setting result:', researchResult);
                             setResult(researchResult);
@@ -122,6 +128,16 @@ export const useResearchJob = (): UseResearchJobReturn => {
             setIsLoading(true);
             setError(null);
             setResult(null);
+
+            // Optimistic job to show loading state immediately
+            const optimisticJob: ResearchJob = {
+                jobId: `optimistic-${Date.now()}`,
+                status: 'submitting',
+                message: 'Initializing research...',
+                createdAt: new Date().toISOString(),
+                topic: topic.trim(),
+            };
+            setCurrentJob(optimisticJob);
 
             // Stop any existing polling
             if (pollingControlRef.current) {

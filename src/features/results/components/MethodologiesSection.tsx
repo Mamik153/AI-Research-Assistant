@@ -1,12 +1,18 @@
 import type { Methodology } from "../types/result.types";
 import { motion } from "motion/react";
 
+import { SectionMedia } from "./SectionMedia";
+
 interface MethodologiesSectionProps {
   methodologies: Methodology[];
+  confidence?: number;
+  images?: string[];
 }
 
 export const MethodologiesSection = ({
   methodologies,
+  confidence,
+  images,
 }: MethodologiesSectionProps) => {
   if (!methodologies.length) return null;
 
@@ -20,6 +26,7 @@ export const MethodologiesSection = ({
       <h3 className="text-xl font-semibold bg-gradient-to-r from-gray-100 to-gray-400 bg-clip-text text-transparent mb-4 flex items-center gap-2">
         Methodologies
       </h3>
+      <SectionMedia confidence={confidence} images={images} />
       <div className="space-y-4">
         {methodologies.map((item, idx) => (
           <div

@@ -6,49 +6,17 @@ import { KeyInsights } from "./KeyInsights";
 import { PapersGrid } from "@/features/papers";
 import { DiagramViewer } from "@/features/diagrams";
 import { StructuredSectionsGrid } from "./StructuredSectionsGrid";
-import { Download, RefreshCw, Loader2, ChevronDown } from "lucide-react";
+import { Download, RefreshCw, Loader2 } from "lucide-react";
 import { downloadResearchPDF } from "@/features/export";
 import { Button } from "@/shared/components/ui/button";
 //import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/shared/components/ui/tabs';
 import { Separator } from "@/shared/components/ui/separator";
 import { OverviewCard } from "./OverviewCard";
-import {
-  motion,
-  useScroll,
-  useMotionValueEvent,
-  AnimatePresence,
-} from "motion/react";
+import { motion } from "motion/react";
 
-export const DynamicResearchResult = ({
-  result,
-  onNewResearch,
-}: ResearchResultProps) => {
+export const DynamicResearchResult = ({ result }: ResearchResultProps) => {
   const [isDownloading, setIsDownloading] = useState(false);
-  const [showScrollCue, setShowScrollCue] = useState(true);
-  const { scrollY } = useScroll();
-
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    // Check if we are near the bottom of the page
-    const windowHeight = typeof window !== "undefined" ? window.innerHeight : 0;
-    const documentHeight =
-      typeof document !== "undefined"
-        ? document.documentElement.scrollHeight
-        : 0;
-
-    // Hide cue if we've reached the bottom (with a small buffer)
-    if (documentHeight > 0 && latest + windowHeight >= documentHeight - 100) {
-      setShowScrollCue(false);
-    } else {
-      setShowScrollCue(true);
-    }
-  });
-
-  const scrollToBottom = () => {
-    window.scrollTo({
-      top: document.documentElement.scrollHeight,
-      behavior: "smooth",
-    });
-  };
+  // Scroll cue logic was removed
 
   if (!result) return null;
 
@@ -68,7 +36,7 @@ export const DynamicResearchResult = ({
         <p>Structured data not available for this research.</p>
         <div className="mt-4">
           <Button
-            onClick={onNewResearch}
+            onClick={() => window.location.reload()}
             variant="default"
             className="bg-blue-600 hover:bg-blue-700"
           >
@@ -110,6 +78,8 @@ export const DynamicResearchResult = ({
         >
           <OverviewCard
             overview={result.parsedSummary!.structured_sections.overview}
+            confidence={result.sectionConfidence?.["overview"]}
+            images={result.sectionImages?.["overview"]}
           />
         </motion.div>
       )}
@@ -162,6 +132,8 @@ export const DynamicResearchResult = ({
         >
           <StructuredSectionsGrid
             sections={result.parsedSummary!.structured_sections}
+            sectionConfidence={result.sectionConfidence}
+            sectionImages={result.sectionImages}
           />
         </motion.div>
       )}
@@ -181,7 +153,7 @@ export const DynamicResearchResult = ({
       {/* </Tabs> */}
 
       {/* Scroll Down Cue */}
-      <AnimatePresence>
+      {/* <AnimatePresence>
         {showScrollCue && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -200,8 +172,7 @@ export const DynamicResearchResult = ({
             </motion.div>
           </motion.div>
         )}
-      </AnimatePresence>
-
+      </AnimatePresence> */}
       {/* Actions Footer */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 z-50">
         <motion.div
@@ -211,7 +182,7 @@ export const DynamicResearchResult = ({
           transition={{ duration: 0.8, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
           <Button
-            onClick={onNewResearch}
+            onClick={() => window.location.reload()}
             variant="default"
             size="lg"
             className="bg-blue-600 hover:bg-blue-500 rounded-full shadow-lg shadow-blue-500/20 active:scale-95"

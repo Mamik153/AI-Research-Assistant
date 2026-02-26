@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "motion/react";
-import { MicrophoneIcon, ArrowUpIcon } from "@/shared/components/icons";
+import { ArrowUpIcon } from "@/shared/components/icons";
 
 interface AIInputComponentProps {
   onSubmit: (topic: string) => void;
@@ -67,7 +67,6 @@ export function AIInputComponent({
   onSubmit,
   isLoading,
   disabled,
-  onMicClick,
   placeholder = "Ask anything...",
   className = "",
   isAtBottom = false,
@@ -79,7 +78,6 @@ export function AIInputComponent({
   const [isMounted, setIsMounted] = useState(false);
   const [isMultiLine, setIsMultiLine] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
-  const [isSpeechSupported, setIsSpeechSupported] = useState(false);
 
   // Ref for textarea height manipulation
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -98,7 +96,6 @@ export function AIInputComponent({
       windowWithSpeech.webkitSpeechRecognition;
 
     if (SpeechRecognition) {
-      setIsSpeechSupported(true);
       const recognition = new SpeechRecognition();
 
       recognition.continuous = true;
@@ -169,8 +166,6 @@ export function AIInputComponent({
       };
 
       recognitionRef.current = recognition;
-    } else {
-      setIsSpeechSupported(false);
     }
 
     return () => {
@@ -271,41 +266,6 @@ export function AIInputComponent({
       handleSubmit();
     }
     // Shift+Enter allows new line (default textarea behavior)
-  };
-
-  // Handle button clicks
-  const handleMicClick = () => {
-    if (!isSpeechSupported) {
-      alert(
-        "Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.",
-      );
-      onMicClick?.();
-      return;
-    }
-
-    if (isLoading || disabled) {
-      return;
-    }
-
-    if (isRecording) {
-      // Stop recording
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
-    } else {
-      // Start recording
-      if (recognitionRef.current) {
-        try {
-          recognitionRef.current.start();
-        } catch (error) {
-          // Recognition might already be starting
-          console.error("Error starting speech recognition:", error);
-        }
-      }
-    }
-
-    // Call the optional callback
-    onMicClick?.();
   };
 
   const handleSubmit = () => {

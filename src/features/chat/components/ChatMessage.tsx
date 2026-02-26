@@ -6,12 +6,10 @@ import ResearchResponseData from "@/shared/components/ResearchResponseData";
 interface ChatMessageProps {
   message: ChatMessageType;
   isLatest: boolean;
-  onReset?: () => void;
 }
 
 export const ChatMessage = memo(function ChatMessage({
   message,
-  onReset,
 }: ChatMessageProps) {
   const formatTimestamp = (timestamp: string) => {
     const date = new Date(timestamp);
@@ -56,7 +54,6 @@ export const ChatMessage = memo(function ChatMessage({
             isVisible={true}
             currentJob={message.researchJob || null}
             result={message.researchResult || null}
-            resetJob={onReset ?? (() => {})}
           />
         </div>
       </div>
