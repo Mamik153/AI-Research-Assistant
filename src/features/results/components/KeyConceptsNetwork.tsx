@@ -1,4 +1,3 @@
-import { Network } from "lucide-react";
 import type { KeyConcept } from "../types/result.types";
 
 interface KeyConceptsNetworkProps {

@@ -1,4 +1,4 @@
-import { Calendar, Hash } from "lucide-react";
+import { Calendar } from "lucide-react";
 import type { ResearchResult } from "@/features/research";
 
 interface ResearchHeroProps {

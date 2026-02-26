@@ -1,4 +1,3 @@
-import { FlaskConical } from "lucide-react";
 import type { Methodology } from "../types/result.types";
 
 interface MethodologiesSectionProps {

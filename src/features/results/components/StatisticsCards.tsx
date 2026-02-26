@@ -1,4 +1,3 @@
-import { BarChart3 } from "lucide-react";
 import type { StatisticItem } from "../types/result.types";
 
 interface StatisticsCardsProps {

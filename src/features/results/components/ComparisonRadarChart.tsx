@@ -39,14 +39,6 @@ const COLORS = [
   "#ec4899",
 ];
 
-const tooltipStyle = {
-  backgroundColor: "#1f2937",
-  border: "1px solid #374151",
-  borderRadius: "8px",
-  padding: "10px 14px",
-  boxShadow: "0 4px 12px rgba(0,0,0,0.4)",
-};
-
 function quantize(value: string): number {
   const normalized = String(value).toLowerCase().trim();
   if (normalized in QUALITY_MAP) return QUALITY_MAP[normalized];

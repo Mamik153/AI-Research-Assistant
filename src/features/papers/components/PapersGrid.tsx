@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BookOpen } from "lucide-react";
+
 import type { ResearchPaper } from "../types/paper.types";
 import { PaperCard } from "./PaperCard";
 import { AbstractModal } from "@/shared/components";

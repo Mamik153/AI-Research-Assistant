@@ -52,7 +52,7 @@ export const DynamicResearchResult = ({
   const hasStructuredSections = result.parsedSummary?.structured_sections;
   const hasPapers = result.papers && result.papers.length > 0;
 
-  console.log("result===>", result.parsedSummary!.structured_sections);
+  //console.log("result===>", result.parsedSummary!.structured_sections);
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 animate-in fade-in duration-500">

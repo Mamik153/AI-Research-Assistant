@@ -1,42 +1,46 @@
-import { useState, useEffect, useCallback } from 'react'
-import { ErrorBoundary } from '@/shared/components'
-import { useResearchJob } from '@/features/research'
-import { AIInputComponent } from '@/features/research'
-import { ChatContainer } from '@/features/chat'
-import './App.css'
-import type { LayoutMode } from '@/shared/types'
-import type { ChatMessage } from '@/features/chat/types/chat.types'
+import { useState, useEffect, useCallback } from "react";
+import { ErrorBoundary } from "@/shared/components";
+import { useResearchJob } from "@/features/research";
+import { AIInputComponent } from "@/features/research";
+import { ChatContainer } from "@/features/chat";
+import "./App.css";
+import type { LayoutMode } from "@/shared/types";
+import type { ChatMessage } from "@/features/chat/types/chat.types";
 
 function App() {
-  const [layoutMode, setLayoutMode] = useState<LayoutMode>('centered')
-  const [isTransitioning, setIsTransitioning] = useState(false)
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>("centered");
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   // Lift the research job state to App level
-  const { submitResearch, isLoading, error, currentJob, result, resetJob } = useResearchJob()
+  const { submitResearch, isLoading, error, currentJob, result, resetJob } =
+    useResearchJob();
 
   // Handle research topic submission
-  const handleSubmit = useCallback((topic: string) => {
-    // 1. Set transitioning flag
-    setIsTransitioning(true);
+  const handleSubmit = useCallback(
+    (topic: string) => {
+      // 1. Set transitioning flag
+      setIsTransitioning(true);
 
-    // 2. Change layout mode to chat (triggers animation)
-    setLayoutMode('chat');
+      // 2. Change layout mode to chat (triggers animation)
+      setLayoutMode("chat");
 
-    // 3. Add user message to chat
-    const userMessage: ChatMessage = {
-      id: `user-${Date.now()}`,
-      type: 'user',
-      content: topic,
-      timestamp: new Date().toISOString()
-    };
-    setChatMessages(prev => [...prev, userMessage]);
+      // 3. Add user message to chat
+      const userMessage: ChatMessage = {
+        id: `user-${Date.now()}`,
+        type: "user",
+        content: topic,
+        timestamp: new Date().toISOString(),
+      };
+      setChatMessages((prev) => [...prev, userMessage]);
 
-    // 4. Submit research job
-    submitResearch(topic);
+      // 4. Submit research job
+      submitResearch(topic);
 
-    // 5. Reset transitioning flag after animation
-    //setTimeout(() => setIsTransitioning(false), 500);
-  }, [submitResearch]);
+      // 5. Reset transitioning flag after animation
+      //setTimeout(() => setIsTransitioning(false), 500);
+    },
+    [submitResearch],
+  );
 
   // Handle position transition complete
   const handlePositionTransitionComplete = useCallback(() => {
@@ -47,7 +51,7 @@ function App() {
   const handleReset = useCallback(() => {
     resetJob();
     setChatMessages([]);
-    setLayoutMode('centered');
+    setLayoutMode("centered");
   }, [resetJob]);
 
   // Once we have a job, transition is done — show chat (loading/result). Input is already hidden.
@@ -60,19 +64,20 @@ function App() {
   // Sync research job state with chat messages
   useEffect(() => {
     if (currentJob) {
-      setChatMessages(prev => {
+      setChatMessages((prev) => {
         // Check if assistant message already exists for this job
         const existingIndex = prev.findIndex(
-          m => m.type === 'assistant' && m.researchJob?.jobId === currentJob.jobId
+          (m) =>
+            m.type === "assistant" && m.researchJob?.jobId === currentJob.jobId,
         );
 
         const assistantMessage: ChatMessage = {
           id: currentJob.jobId,
-          type: 'assistant',
-          content: '',
+          type: "assistant",
+          content: "",
           timestamp: currentJob.createdAt,
           researchJob: currentJob,
-          researchResult: result || undefined
+          researchResult: result || undefined,
         };
 
         if (existingIndex >= 0) {
@@ -91,30 +96,33 @@ function App() {
   // Handle errors
   useEffect(() => {
     if (error) {
-      console.error('Research error:', error);
+      console.error("Research error:", error);
 
       // If there's an error but no current job, it means submission failed
       // We need to show this error in the chat
       if (!currentJob) {
-        setChatMessages(prev => {
+        setChatMessages((prev) => {
           // Check if the last message is already this error to avoid duplicates
           const lastMsg = prev[prev.length - 1];
-          if (lastMsg?.researchJob?.status === 'failed' && lastMsg.researchJob.message === error) {
+          if (
+            lastMsg?.researchJob?.status === "failed" &&
+            lastMsg.researchJob.message === error
+          ) {
             return prev;
           }
 
           const errorMessage: ChatMessage = {
             id: `error-${Date.now()}`,
-            type: 'assistant',
-            content: '',
+            type: "assistant",
+            content: "",
             timestamp: new Date().toISOString(),
             researchJob: {
-              jobId: 'submission-failed',
-              status: 'failed',
+              jobId: "submission-failed",
+              status: "failed",
               message: error,
               createdAt: new Date().toISOString(),
-              topic: 'Research Request'
-            }
+              topic: "Research Request",
+            },
           };
 
           return [...prev, errorMessage];
@@ -125,23 +133,26 @@ function App() {
 
   // Placeholder handlers for future features
   const handlePlusClick = useCallback(() => {
-    console.log('Plus button clicked')
+    // console.log('Plus button clicked')
   }, []);
 
   const handleMicClick = useCallback(() => {
-    console.log('Microphone button clicked')
+    // console.log('Microphone button clicked')
   }, []);
 
   return (
     <ErrorBoundary>
       <div className="h-screen w-full overflow-hidden relative app">
         {/* Chat Container */}
-        <div className="absolute top-0 left-0 right-0 z-10" style={{ bottom: chatMessages.length === 0 ? '120px' : '0' }}>
+        <div
+          className="absolute top-0 left-0 right-0 z-10"
+          style={{ bottom: chatMessages.length === 0 ? "120px" : "0" }}
+        >
           <ChatContainer
             topic={currentJob?.topic}
             isTransitioning={isTransitioning}
             messages={chatMessages}
-            isVisible={layoutMode === 'chat'}
+            isVisible={layoutMode === "chat"}
             onReset={handleReset}
             className="h-full"
           />
@@ -155,16 +166,14 @@ function App() {
             onMicClick={handleMicClick}
             placeholder="Enter a topic to research"
             disabled={isLoading}
-            isAtBottom={layoutMode === 'chat'}
+            isAtBottom={layoutMode === "chat"}
             onPositionTransitionComplete={handlePositionTransitionComplete}
             isLoading={isLoading}
           />
         )}
-
-
       </div>
     </ErrorBoundary>
-  )
+  );
 }
 
-export default App
+export default App;

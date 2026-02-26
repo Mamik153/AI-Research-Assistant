@@ -1,4 +1,3 @@
-import { TrendingUp, AlertTriangle } from "lucide-react";
 import type { BenefitItem, RiskItem } from "../types/result.types";
 
 interface BenefitsRisksDisplayProps {

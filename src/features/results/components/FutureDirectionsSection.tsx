@@ -1,4 +1,3 @@
-import { Compass } from "lucide-react";
 import type { FutureDirection } from "../types/result.types";
 
 interface FutureDirectionsSectionProps {

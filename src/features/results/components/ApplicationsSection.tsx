@@ -1,4 +1,3 @@
-import { Briefcase } from "lucide-react";
 import type { ApplicationItem } from "../types/result.types";
 
 interface ApplicationsSectionProps {

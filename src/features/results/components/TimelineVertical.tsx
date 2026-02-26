@@ -1,4 +1,3 @@
-import { Calendar } from "lucide-react";
 import type { TimelineEvent } from "../types/result.types";
 
 interface TimelineVerticalProps {
