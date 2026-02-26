@@ -1,4 +1,5 @@
 import type { OverviewSection } from "../types/result.types";
+import { motion } from "motion/react";
 
 interface OverviewCardProps {
   overview: OverviewSection;
@@ -6,15 +7,20 @@ interface OverviewCardProps {
 
 export const OverviewCard = ({ overview }: OverviewCardProps) => {
   return (
-    <div className="w-full mb-8">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="w-full mb-8"
+    >
       {overview.title && (
-        <h3 className="text-xl font-semibold text-black mb-3">
+        <h3 className="text-xl font-semibold bg-gradient-to-r from-gray-100 to-gray-400 bg-clip-text text-transparent mb-4 flex items-center gap-2">
           {overview.title}
         </h3>
       )}
-      <div className="bg-white/20 backdrop-blur-sm rounded-3xl p-6 text-lg text-gray-600 leading-relaxed shadow-sm">
+      <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-6 text-lg text-gray-300 leading-relaxed shadow-sm">
         <p>{overview.content}</p>
       </div>
-    </div>
+    </motion.div>
   );
 };

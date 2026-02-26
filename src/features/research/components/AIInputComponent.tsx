@@ -375,15 +375,18 @@ export function AIInputComponent({
   };
 
   return (
-    <div ref={containerRef}>
+    <div
+      ref={containerRef}
+      className="w-[90%] z-10  sm:w-[80%] md:w-full max-w-sm md:max-w-2xl"
+      style={{
+        ...getPositionStyles(),
+        willChange: isAtBottom ? "auto" : "transform, opacity",
+      }}
+    >
       <div
-        className={`z-10 w-[90%] sm:w-[80%] md:w-full max-w-sm md:max-w-2xl px-3 sm:px-4 rounded-3xl bg-white shadow-lg ${
+        className={` px-3 sm:px-4 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl ${
           isMounted ? "opacity-100" : "opacity-0"
         } ${className}`}
-        style={{
-          ...getPositionStyles(),
-          willChange: isAtBottom ? "auto" : "transform, opacity",
-        }}
       >
         <motion.div
           className="relative p-4 flex items-center"
@@ -404,7 +407,7 @@ export function AIInputComponent({
               onKeyDown={handleKeyDown}
               placeholder={placeholder}
               aria-label="Message input"
-              className="w-full resize-none rounded-md py-2 px-[15px] outline-none overflow-y-auto focus-visible:ring-0 focus-visible:ring-none focus-visible:ring-offset-0 disabled:opacity-50 disabled:cursor-not-allowed text-black"
+              className="w-full resize-none rounded-md py-2 px-[15px] outline-none overflow-y-auto focus-visible:ring-0 focus-visible:ring-none focus-visible:ring-offset-0 disabled:opacity-50 disabled:cursor-not-allowed text-white placeholder:text-gray-400 bg-transparent"
               style={{
                 maxHeight: "100px",
                 transition: "height 200ms ease-out",
@@ -427,12 +430,12 @@ export function AIInputComponent({
             }}
           >
             {/* MicrophoneButton - min 44x44px for touch */}
-            <button
+            {/*  <button
               onClick={handleMicClick}
               className={`flex min-w-[44px] min-h-[44px] size-11 items-center justify-center rounded-full p-1 transition-all duration-200 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
                 isRecording
                   ? "bg-red-500 hover:bg-red-600 text-white animate-pulse"
-                  : "bg-gray-100 hover:bg-gray-200 text-black"
+                  : "bg-white/10 hover:bg-white/20 text-white"
               }`}
               aria-label={
                 isRecording ? "Stop voice input" : "Start voice input"
@@ -449,12 +452,12 @@ export function AIInputComponent({
               }
             >
               <MicrophoneIcon className="w-5 h-5" />
-            </button>
+            </button> */}
 
             {/* SubmitButton with dark background - min 44x44px for touch */}
             <button
               onClick={handleSubmit}
-              className={`flex min-w-[44px] min-h-[44px] size-11 items-center justify-center rounded-full p-1 transition-all duration-200 bg-[#121212] text-white hover:bg-[#2a2a2a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+              className={`flex min-w-[44px] min-h-[44px] size-11 items-center justify-center rounded-full p-1 transition-all duration-200 bg-white text-black hover:bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
                 isAnimating ? "scale-90 rotate-90" : "hover:scale-105 rotate-0"
               }`}
               aria-label="Submit message"
@@ -466,7 +469,7 @@ export function AIInputComponent({
           </motion.div>
         </motion.div>
       </div>
-      <p>
+      <p className="text-gray-300 text-center text-xs mt-3">
         SlickResearch can make mistakes. Please verify important information.
       </p>
     </div>

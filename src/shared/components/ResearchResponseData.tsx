@@ -30,13 +30,6 @@ const ResearchResponseData = ({
     <div className="w-full relative text-white mt-20">
       {currentJob && (
         <div className="space-y-4">
-          {/*<JobStatus 
-                        jobId={currentJob.jobId}
-                        status={currentJob.status}
-                        message={currentJob.message}
-                        createdAt={currentJob.createdAt}
-                    />*/}
-
           {currentJob.status === "failed" ? (
             <div className="bg-red-400/20 backdrop-blur-xl border border-red-400/50 rounded-2xl p-4 text-red-100">
               <div className="font-semibold mb-1 text-white">

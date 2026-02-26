@@ -59,34 +59,6 @@ export const DynamicResearchResult = ({
       {/* Hero Section */}
       <ResearchHero result={result} />
 
-      {/* Main Content with Tabs */}
-      {/* <Tabs defaultValue="overview" className="w-full mt-8">
-                <TabsList variant="line" className="w-full justify-start border-b border-gray-700">
-                    <TabsTrigger value="overview" className="text-gray-300 data-[state=active]:text-white">
-                        Overview
-                    </TabsTrigger>
-                    {hasDiagrams && (
-                        <TabsTrigger value="diagrams" className="text-gray-300 data-[state=active]:text-white">
-                            Diagrams
-                        </TabsTrigger>
-                    )}
-                    {hasKeyInsights && (
-                        <TabsTrigger value="insights" className="text-gray-300 data-[state=active]:text-white">
-                            Key Insights
-                        </TabsTrigger>
-                    )}
-                    {hasStructuredSections && (
-                        <TabsTrigger value="sections" className="text-gray-300 data-[state=active]:text-white">
-                            Sections
-                        </TabsTrigger>
-                    )}
-                    {hasPapers && (
-                        <TabsTrigger value="papers" className="text-gray-300 data-[state=active]:text-white">
-                            Papers
-                        </TabsTrigger>
-                    )}
-                </TabsList>*/}
-
       {result.parsedSummary!.structured_sections.overview && (
         <OverviewCard
           overview={result.parsedSummary!.structured_sections.overview}
@@ -95,12 +67,6 @@ export const DynamicResearchResult = ({
 
       <div id="overview" className="space-y-8 mt-6">
         {result.summary && <ResearchSummary summary={result.summary} />}
-        {/* {hasKeyInsights && (
-                        <>
-                            <Separator className="bg-gray-700" />
-                            <KeyInsights insights={result.keyInsights!} />
-                        </>
-                    )} */}
       </div>
 
       {hasDiagrams && (

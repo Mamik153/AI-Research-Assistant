@@ -29,7 +29,7 @@ export const PapersGrid = ({ papers }: PapersGridProps) => {
 
   return (
     <div className="w-full mb-12">
-      <h3 className="text-2xl font-semibold text-black mb-4 flex items-center gap-2">
+      <h3 className="text-2xl font-semibold bg-gradient-to-r from-gray-100 to-gray-400 bg-clip-text text-transparent mb-4 flex items-center gap-2">
         References & Source Papers
       </h3>
 

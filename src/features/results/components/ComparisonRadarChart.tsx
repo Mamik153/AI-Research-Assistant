@@ -16,6 +16,7 @@ import {
 } from "recharts";
 import { BarChart2, Radar as RadarIcon, Table2 } from "lucide-react";
 import type { ComparisonData } from "../types/result.types";
+import { motion } from "motion/react";
 
 interface ComparisonRadarChartProps {
   comparisonData: ComparisonData;
@@ -96,12 +97,17 @@ export const ComparisonRadarChart = ({
   ];
 
   return (
-    <div className="w-full mb-8">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: 0.7 }}
+      className="w-full mb-8"
+    >
       <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-        <h3 className="text-2xl font-semibold text-black flex items-center gap-2">
+        <h3 className="text-xl font-semibold bg-gradient-to-r from-gray-100 to-gray-400 bg-clip-text text-transparent flex items-center gap-2">
           Comparison
         </h3>
-        <div className="flex rounded-lg bg-gray-200 p-1 gap-0.5">
+        <div className="flex rounded-lg bg-gray-200/10 p-1.5 gap-0.5">
           {tabs.map(({ id, label, icon }) => (
             <button
               key={id}
@@ -110,7 +116,7 @@ export const ComparisonRadarChart = ({
               className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
                 view === id
                   ? "bg-white text-gray-800"
-                  : "text-gray-500 hover:text-gray-800"
+                  : "text-gray-500 hover:text-gray-400"
               }`}
             >
               {icon}
@@ -120,7 +126,7 @@ export const ComparisonRadarChart = ({
         </div>
       </div>
 
-      <div className="bg-white/50 p-6 rounded-2xl shadow-sm">
+      <div className="bg-white/5 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-sm">
         {view === "radar" && (
           <div className="h-[380px] w-full min-h-0" style={{ minWidth: 280 }}>
             <ResponsiveContainer width="100%" height="100%">
@@ -211,11 +217,11 @@ export const ComparisonRadarChart = ({
         )}
 
         {view === "table" && (
-          <div className="overflow-x-auto rounded-xl border border-gray-300">
+          <div className="overflow-x-auto rounded-xl border border-white/10">
             <table className="w-full text-sm text-left">
               <thead>
-                <tr className="border-b border-gray-300 bg-gray-100">
-                  <th className="px-4 py-3 text-gray-600 font-semibold">
+                <tr className="border-b border-white/10 bg-white/5">
+                  <th className="px-4 py-3 text-gray-300 font-semibold">
                     Criteria
                   </th>
                   {items.map((item, idx) => (
@@ -233,11 +239,11 @@ export const ComparisonRadarChart = ({
                 {criteria.map((subject, i) => (
                   <tr
                     key={i}
-                    className="border-b border-gray-300 hover:bg-gray-100"
+                    className="border-b border-white/10 hover:bg-white/5"
                   >
-                    <td className="px-4 py-3 text-gray-600">{subject}</td>
+                    <td className="px-4 py-3 text-gray-300">{subject}</td>
                     {items.map((item) => (
-                      <td key={item.name} className="px-4 py-3 text-gray-600">
+                      <td key={item.name} className="px-4 py-3 text-gray-300">
                         {item.values[i] ?? "—"}
                       </td>
                     ))}
@@ -248,6 +254,6 @@ export const ComparisonRadarChart = ({
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };

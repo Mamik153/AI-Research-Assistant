@@ -142,16 +142,40 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <div className="h-screen w-full overflow-hidden relative app bg-white">
+      <div className="h-screen w-full overflow-hidden relative app bg-[#09090b] text-gray-200">
+        {/* Animated AI Background Blobs */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+          <div
+            className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-blue-600/20 blur-[120px] mix-blend-screen"
+            style={{
+              animation: "pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+            }}
+          />
+          <div
+            className="absolute top-[20%] -right-[10%] w-[40%] h-[40%] rounded-full bg-purple-600/20 blur-[120px] mix-blend-screen"
+            style={{
+              animation: "pulse 10s cubic-bezier(0.4, 0, 0.6, 1) infinite 2s",
+            }}
+          />
+          <div
+            className="absolute -bottom-[20%] left-[20%] w-[60%] h-[60%] rounded-full bg-indigo-600/20 blur-[120px] mix-blend-screen"
+            style={{
+              animation: "pulse 12s cubic-bezier(0.4, 0, 0.6, 1) infinite 4s",
+            }}
+          />
+        </div>
+
         {/* Header */}
-        <header className="absolute top-0 left-0 right-0 z-50 p-6 flex items-center pointer-events-none w-full bg-white">
+        <header className="absolute top-0 left-0 right-0 z-50 p-6 flex items-center pointer-events-none w-full bg-white/5 backdrop-blur-md">
           <div className="flex items-center gap-2 max-w-3xl mx-auto w-full">
             <img
               src="/logo1.png"
               alt="Logo"
-              className="h-8 w-auto object-contain"
+              className="h-8 w-auto object-contain rounded-full"
             />
-            <p>SlickResearch</p>
+            <p className="font-semibold text-white/90 tracking-wide">
+              SlickResearch
+            </p>
           </div>
         </header>
 

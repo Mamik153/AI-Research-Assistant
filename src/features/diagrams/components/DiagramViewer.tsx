@@ -75,6 +75,12 @@ export const DiagramViewer = ({
         suppressErrorRendering: true,
       });
       const { svg } = await mermaid.render(id, sanitized);
+
+      // If Mermaid suppressed the throw but returned its error-banner SVG, reject it.
+      if (svg.includes("Syntax error in text") || svg.includes("error-icon")) {
+        throw new Error("Parse error in diagram syntax.");
+      }
+
       setSvgContent(svg);
     } catch (err) {
       setError(formatDiagramError(err));
@@ -168,12 +174,12 @@ export const DiagramViewer = ({
 
   return (
     <div className="w-full mb-8 space-y-4">
-      <h3 className="text-xl font-semibold text-black flex items-center gap-2">
+      <h3 className="text-xl font-semibold bg-gradient-to-r from-gray-100 to-gray-400 bg-clip-text text-transparent mb-4 flex items-center gap-2">
         Diagrams
       </h3>
       <div
         ref={containerRef}
-        className={`rounded-3xl bg-gray-white/50 backdrop-blur-sm overflow-hidden ${className}`}
+        className={`rounded-3xl bg-gray-white/20 backdrop-blur-sm overflow-hidden ${className}`}
       >
         <div
           className="relative overflow-hidden bg-white/50 flex items-center justify-center min-h-[350px] p-4"

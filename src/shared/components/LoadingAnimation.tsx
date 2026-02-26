@@ -1,4 +1,7 @@
+import { Loader } from "lucide-react";
 import React, { useRef } from "react";
+import { ShimmeringText } from "../components/ui/shimmering-text";
+import { Orb } from "../components/ui/orb";
 
 const LoadingAnimation: React.FC<{
   topic?: string;
@@ -137,27 +140,26 @@ const LoadingAnimation: React.FC<{
     <div className="flex flex-col items-center justify-center py-10 animate-fade-in h-full">
       <div ref={containerRef} className="w-[300px] h-[300px]" />
 
+      <Orb
+        //colors={["#000000ff", "#bc2929ff"]}
+        className="w-20 h-20"
+        agentState="listening"
+      />
+
       {/* Current Loading Status Message */}
-      <p className="text-xl font-medium text-black mt-4 text-center max-w-md px-4 min-h-[3rem]">
+      <p className="text-xl font-medium text-white mt-4 text-center max-w-md px-4 min-h-[3rem]">
         {message || `Synthesizing Knowledge about ${topic}...`}
       </p>
 
       {/* Chain of Thought Stream */}
       {chainOfThought && chainOfThought.length > 0 && (
-        <div className="mt-8 px-4 w-full max-w-2xl">
-          <div className="flex flex-col space-y-2 opacity-90">
-            {/* Show only the last 3 thought steps to keep it clean */}
-            {chainOfThought.map((step, index) => (
-              <div
-                key={index}
-                className={`text-sm text-gray-500 font-mono transition-all duration-500 animate-slide-up bg-white/5 px-3 py-2 rounded-lg`}
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <span className="mr-2 text-gray-500">➜</span>
-                {step}
-              </div>
-            ))}
-          </div>
+        <div className="mt-8 px-4 w-full max-w-2xl mx-auto flex items-center justify-center">
+          <ShimmeringText
+            text={chainOfThought[chainOfThought.length - 1].split("] ")[1]}
+            duration={3}
+            color="#bebebeff"
+            //shimmerColor="#3B82F6"
+          />
         </div>
       )}
     </div>
