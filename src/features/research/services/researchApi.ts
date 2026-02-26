@@ -5,7 +5,7 @@ import type {
     ApiError
 } from '../types/research.types';
 
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/api`;
 
 // Helper function to create ApiError objects
 const createApiError = (message: string, status?: number, type: ApiError['type'] = 'network'): ApiError => ({

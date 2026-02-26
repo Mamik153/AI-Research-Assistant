@@ -72,6 +72,7 @@ export const DiagramViewer = ({
         theme: "dark",
         securityLevel: "loose",
         flowchart: { useMaxWidth: true },
+        suppressErrorRendering: true,
       });
       const { svg } = await mermaid.render(id, sanitized);
       setSvgContent(svg);
@@ -264,7 +265,7 @@ export const DiagramViewer = ({
             )}
             {svgContent && !error && (
               <div
-                className="mermaid-svg-wrapper [&_svg]:max-w-full [&_svg]:h-auto"
+                className="mermaid-svg-wrapper [&_svg]:max-w-full [&_svg]:h-auto [&_.error-icon]:hidden [&_.error-text]:hidden [&_#dError]:hidden [&_text]:!opacity-100"
                 dangerouslySetInnerHTML={{ __html: svgContent }}
               />
             )}

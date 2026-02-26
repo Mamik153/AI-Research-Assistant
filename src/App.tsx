@@ -142,7 +142,19 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <div className="h-screen w-full overflow-hidden relative app">
+      <div className="h-screen w-full overflow-hidden relative app bg-white">
+        {/* Header */}
+        <header className="absolute top-0 left-0 right-0 z-50 p-6 flex items-center pointer-events-none w-full bg-white">
+          <div className="flex items-center gap-2 max-w-3xl mx-auto w-full">
+            <img
+              src="/logo1.png"
+              alt="Logo"
+              className="h-8 w-auto object-contain"
+            />
+            <p>SlickResearch</p>
+          </div>
+        </header>
+
         {/* Chat Container */}
         <div
           className="absolute top-0 left-0 right-0 z-10"

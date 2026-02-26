@@ -27,7 +27,7 @@ const ResearchResponseData = ({
   ////console.log("result: ", result);
 
   return (
-    <div className="w-full relative text-white">
+    <div className="w-full relative text-white mt-20">
       {currentJob && (
         <div className="space-y-4">
           {/*<JobStatus 

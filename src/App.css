@@ -1,6 +1,7 @@
 /* App Layout Styles */
-.app {
-  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+.body {
+  height: 100vh;
+  overflow: hidden;
 }
 
 .app-header {
@@ -62,15 +63,15 @@
   .app-title {
     font-size: 2.5rem;
   }
-  
+
   .app-subtitle {
     font-size: 1.125rem;
   }
-  
+
   .app-header {
     padding: 1.5rem 1rem;
   }
-  
+
   .app-main {
     padding: 1rem;
   }
@@ -80,7 +81,7 @@
   .app-title {
     font-size: 2rem;
   }
-  
+
   .app-subtitle {
     font-size: 1rem;
   }
