@@ -4,7 +4,8 @@ import { Orb } from "../components/ui/orb";
 
 const LoadingAnimation: React.FC<{
   chainOfThought?: string[];
-}> = ({ chainOfThought }) => {
+  topic?: string;
+}> = ({ chainOfThought, topic }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   /* useEffect(() => {
@@ -152,7 +153,11 @@ const LoadingAnimation: React.FC<{
       {chainOfThought && chainOfThought.length > 0 && (
         <div className="mt-8 px-4 w-full max-w-2xl mx-auto flex items-center justify-center">
           <ShimmeringText
-            text={chainOfThought[chainOfThought.length - 1].split("] ")[1]}
+            text={
+              chainOfThought.length > 0
+                ? chainOfThought[chainOfThought.length - 1].split("] ")[1]
+                : `Synthesizing Knowledge about ${topic}...`
+            }
             duration={3}
             color="#bebebeff"
             className="text-xl text-center"

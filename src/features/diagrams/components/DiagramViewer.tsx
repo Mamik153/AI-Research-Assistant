@@ -25,15 +25,21 @@ const SCALE_STEP = 0.25;
 function sanitizeMermaidCode(code: string): string {
   const sanitized = code
     .trim()
+    // If the API returns literal "\n" string, replace it with actual newlines
+    .replace(/\\n/g, "\n")
     // Fix edge label with extra ">": |...|> -> |...| (so arrow is --> not -->|>)
     .replace(/\|\s*>\s*/g, "| ")
     // Replace non-standard hyphens/dashes that break Mermaid parsing (e.g. U+2011)
-    .replace(/[\u2011\u2013\u2014]/g, "-")
+    .replace(/[\u2011\u2012\u2013\u2014\u2015]/g, "-")
     // Replace smart quotes with standard quotes
     .replace(/[\u2018\u2019]/g, "'")
     .replace(/[\u201C\u201D]/g, '"')
+    // Replace non-standard spaces with regular space (e.g. narrow no-break space U+202F)
+    .replace(/[\u00A0\u202F\u200B-\u200D\uFEFF]/g, " ")
     // Replace semicolons with newlines, as Mermaid often fails parsing single-line graphs
-    .replace(/;/g, "\n");
+    .replace(/;/g, "\n")
+    // Escape unclosed `<` brackets when not used in arrows `<-->`
+    .replace(/<(?![-\s])/g, "&lt;");
 
   // Split by newline and trim each line's leading/trailing spaces, then rejoin
   return sanitized
@@ -89,7 +95,15 @@ export const DiagramViewer = ({
       const { svg } = await mermaid.render(id, sanitized);
 
       // If Mermaid suppressed the throw but returned its error-banner SVG, reject it.
-      if (svg.includes("Syntax error in text") || svg.includes("error-icon")) {
+      // Note: Mermaid v11+ includes ".error-icon" in <style> of every SVG, so we
+      // must check for actual error DOM elements rather than naive string matching.
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(svg, "image/svg+xml");
+      const hasErrorElement =
+        doc.querySelector(".error-text") ||
+        doc.querySelector("#d" + id + " .error-icon") ||
+        doc.querySelector("text.error-text");
+      if (hasErrorElement) {
         throw new Error("Parse error in diagram syntax.");
       }
 

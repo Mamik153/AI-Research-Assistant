@@ -47,7 +47,10 @@ const ResearchResponseData = ({
           ) : result ? (
             <ResearchResult result={result} />
           ) : (
-            <LoadingAnimation chainOfThought={currentJob?.chainOfThought} />
+            <LoadingAnimation
+              chainOfThought={currentJob?.chainOfThought}
+              topic={currentJob?.topic}
+            />
           )}
         </div>
       )}

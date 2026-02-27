@@ -43,7 +43,7 @@ export const useResearchJob = (): UseResearchJobReturn => {
                 ...prevJob,
                 status: statusResponse.status as JobStatus,
                 message: statusResponse.message,
-                chainOfThought: statusResponse.chain_of_thought,
+                chainOfThought: statusResponse.chain_of_thought ?? prevJob.chainOfThought,
             };
 
             //console.log('Updated job:', updatedJob);

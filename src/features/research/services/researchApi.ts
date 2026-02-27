@@ -8,25 +8,28 @@ import type {
 const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/api`;
 
 // Helper function to create ApiError objects
-const createApiError = (message: string, status?: number, type: ApiError['type'] = 'network'): ApiError => ({
+const createApiError = (message: string, status?: number, type: ApiError['type'] = 'network', code?: string): ApiError => ({
     message,
     status,
-    type
+    type,
+    code
 });
 
 // Helper function to handle fetch responses
 const handleResponse = async <T>(response: Response): Promise<T> => {
     if (!response.ok) {
         let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+        let errorCode: string | undefined;
 
         try {
             const errorData = await response.json();
-            errorMessage = errorData.message || errorData.error || errorMessage;
+            errorMessage = errorData.detail || errorData.message || errorData.error || errorMessage;
+            errorCode = errorData.code;
         } catch {
             // If we can't parse the error response, use the default message
         }
 
-        throw createApiError(errorMessage, response.status, 'server');
+        throw createApiError(errorMessage, response.status, 'server', errorCode);
     }
 
     try {
@@ -57,6 +60,7 @@ export const submitResearch = async (topic: string): Promise<ResearchJobResponse
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${import.meta.env.API_KEY}`
             },
             body: JSON.stringify(requestBody),
         });
@@ -94,6 +98,7 @@ export const getJobStatus = async (jobId: string): Promise<ResearchJobResponse> 
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${import.meta.env.API_KEY}`
             },
         });
 
@@ -124,7 +129,7 @@ export const getJobStatus = async (jobId: string): Promise<ResearchJobResponse> 
 export const pollJobStatus = (
     jobId: string,
     onStatusUpdate: (status: ResearchJobResponse) => void,
-    intervalMs: number = 3000
+    intervalMs: number = 10000
 ): { stop: () => void } => {
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
     let isPolling = true;
@@ -141,13 +146,37 @@ export const pollJobStatus = (
                 timeoutId = setTimeout(poll, intervalMs);
             }
         } catch (error) {
+            const apiError = error as ApiError;
+            const isTransient = apiError && (
+                apiError.status === 429 ||
+                apiError.status === 503 ||
+                apiError.code === 'SERVER_BUSY' ||
+                apiError.code === 'RATE_LIMIT_EXCEEDED'
+            );
+
+            if (isPolling && isTransient) {
+                // Transient error, show message but keep polling
+                const transientMessage = apiError.message
+                    ? `${apiError.message} (Retrying in background...)`
+                    : 'Server is busy, retrying in background...';
+                onStatusUpdate({
+                    job_id: jobId,
+                    status: 'running',
+                    created_at: new Date().toISOString(),
+                    message: transientMessage
+                });
+                // Wait a bit longer to retry
+                timeoutId = setTimeout(poll, intervalMs * 2);
+                return;
+            }
+
             // Pass error to callback as a failed status
             const errorStatus: ResearchJobResponse = {
                 job_id: jobId,
                 status: 'failed',
                 created_at: new Date().toISOString(),
-                message: error && typeof error === 'object' && 'message' in error
-                    ? (error as ApiError).message
+                message: apiError && typeof apiError === 'object' && 'message' in apiError
+                    ? apiError.message
                     : 'Failed to check job status'
             };
             onStatusUpdate(errorStatus);
@@ -190,6 +219,7 @@ export const getResearchResult = async (jobId: string): Promise<ResearchResultRe
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${import.meta.env.API_KEY}`
             },
         });
 

@@ -94,6 +94,7 @@ export interface ApiError {
   message: string;
   status?: number;
   type: 'network' | 'server' | 'validation' | 'timeout';
+  code?: string;
 }
 
 // API Request Types

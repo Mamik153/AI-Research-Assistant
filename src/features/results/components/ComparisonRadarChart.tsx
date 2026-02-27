@@ -149,38 +149,40 @@ export const ComparisonRadarChart = ({
 
       <div className="bg-white/5 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-sm">
         {view === "radar" && (
-          <div className="h-[380px] w-full min-h-0" style={{ minWidth: 280 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <RadarChart
-                data={data}
-                margin={{ top: 20, right: 30, bottom: 20, left: 30 }}
-              >
-                <PolarGrid stroke="#9fa8b6ff" />
-                <PolarAngleAxis
-                  dataKey="subject"
-                  tick={{ fill: "#9ca3af", fontSize: 11 }}
-                  tickLine={{ stroke: "#4b5563" }}
-                />
-                <PolarRadiusAxis
-                  angle={90}
-                  domain={[0, 3]}
-                  tick={{ fill: "#6b7280", fontSize: 10 }}
-                  tickCount={4}
-                />
-                {items.map((item, idx) => (
-                  <Radar
-                    key={item.name}
-                    name={item.name}
-                    dataKey={item.name}
-                    stroke={COLORS[idx % COLORS.length]}
-                    fill={COLORS[idx % COLORS.length]}
-                    fillOpacity={0.3}
-                    strokeWidth={2}
+          <div className="min-h-[380px] w-full" style={{ minWidth: 280 }}>
+            <div className="h-[380px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <RadarChart
+                  data={data}
+                  margin={{ top: 20, right: 30, bottom: 20, left: 30 }}
+                >
+                  <PolarGrid stroke="#9fa8b6ff" />
+                  <PolarAngleAxis
+                    dataKey="subject"
+                    tick={{ fill: "#9ca3af", fontSize: 11 }}
+                    tickLine={{ stroke: "#4b5563" }}
                   />
-                ))}
-                <Tooltip content={<CustomChartTooltip />} cursor={false} />
-              </RadarChart>
-            </ResponsiveContainer>
+                  <PolarRadiusAxis
+                    angle={90}
+                    domain={[0, 3]}
+                    tick={{ fill: "#6b7280", fontSize: 10 }}
+                    tickCount={4}
+                  />
+                  {items.map((item, idx) => (
+                    <Radar
+                      key={item.name}
+                      name={item.name}
+                      dataKey={item.name}
+                      stroke={COLORS[idx % COLORS.length]}
+                      fill={COLORS[idx % COLORS.length]}
+                      fillOpacity={0.3}
+                      strokeWidth={2}
+                    />
+                  ))}
+                  <Tooltip content={<CustomChartTooltip />} cursor={false} />
+                </RadarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         )}
 
