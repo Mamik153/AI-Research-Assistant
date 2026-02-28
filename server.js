@@ -21,7 +21,7 @@ const proxyOptions = {
   on: {
     proxyReq: (proxyReq) => {
       if (API_KEY) {
-        proxyReq.setHeader('Authorization', `Bearer ${API_KEY}`);
+        proxyReq.setHeader('X-API-Key', API_KEY);
       }
     },
   },

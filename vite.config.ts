@@ -21,7 +21,7 @@ export default defineConfig(({ mode }) => {
           configure: (proxy) => {
             proxy.on('proxyReq', (proxyReq) => {
               if (apiKey) {
-                proxyReq.setHeader('Authorization', `Bearer ${apiKey}`);
+                proxyReq.setHeader('X-API-Key', apiKey);
               }
             });
           },
@@ -32,7 +32,7 @@ export default defineConfig(({ mode }) => {
           configure: (proxy) => {
             proxy.on('proxyReq', (proxyReq) => {
               if (apiKey) {
-                proxyReq.setHeader('Authorization', `Bearer ${apiKey}`);
+                proxyReq.setHeader('X-API-Key', apiKey);
               }
             });
           },

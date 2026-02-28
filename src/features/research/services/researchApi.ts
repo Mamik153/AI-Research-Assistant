@@ -87,9 +87,15 @@ export const submitResearch = async (topic: string): Promise<ResearchJobResponse
 
         const response = await fetch(endpoint, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: JSON.stringify(requestBody),
         });
+
+        console.log("API KEY", config.apiKey)
+
+        console.log(response);
 
         return await handleResponse<ResearchJobResponse>(response);
     } catch (error) {

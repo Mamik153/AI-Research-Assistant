@@ -21,10 +21,19 @@ export const ResearchResponseData = ({
     return null;
   }
 
+  console.log(currentJob);
+
   return (
     <div className="w-full relative text-white mt-20">
       {currentJob && (
         <div className="space-y-4">
+          {currentJob.status !== "completed" &&
+          currentJob.status !== "failed" ? (
+            <LoadingAnimation
+              chainOfThought={currentJob?.chainOfThought}
+              topic={currentJob?.topic}
+            />
+          ) : null}
           {currentJob.status === "failed" ? (
             <div className="bg-red-400/20 backdrop-blur-xl border border-red-400/50 rounded-2xl p-4 text-red-100">
               <div className="font-semibold mb-1 text-white">
@@ -41,14 +50,10 @@ export const ResearchResponseData = ({
                 Try Again
               </button>
             </div>
-          ) : result ? (
+          ) : null}
+          {currentJob?.status === "completed" ? (
             <ResearchResult result={result} />
-          ) : (
-            <LoadingAnimation
-              chainOfThought={currentJob?.chainOfThought}
-              topic={currentJob?.topic}
-            />
-          )}
+          ) : null}
         </div>
       )}
 
