@@ -35,12 +35,12 @@ export const LoadingAnimation = ({
         </div>
       )}
 
-      <div className="mt-8 px-4 w-full max-w-2xl mx-auto flex items-center justify-center">
-        <h4 className="text-lg font-semibold mb-2">Note:</h4>
-        <p className="text-sm text-center">
+      <div className="mt-8 px-4 w-full max-w-2xl mx-auto  border border-dashed border-yellow-500/40 bg-gradient-to-br from-yellow-400/5 to-blue-400/5 backdrop-blur-xl rounded-xl p-4">
+        <h4 className="text-lg font-bold mb-2">Note:</h4>
+        <p className="text-sm">
           It takes some time to generate the research report.
         </p>
-        <p className="text-sm text-center">Please be patient.</p>
+        <p className="text-sm">Please be patient.</p>
       </div>
     </div>
   );

@@ -16,8 +16,7 @@ import {
 import { BarChart2, Radar as RadarIcon, Table2 } from "lucide-react";
 import type { ComparisonData } from "../types/result.types";
 import { motion } from "motion/react";
-
-import { SectionMedia } from "./SectionMedia";
+import { Badge } from "@/shared/components/ui/badge";
 
 interface ComparisonRadarChartProps {
   comparisonData: ComparisonData;
@@ -59,11 +58,13 @@ interface CustomTooltipProps {
 
 function CustomChartTooltip({ active, payload, label }: CustomTooltipProps) {
   if (!active || !payload?.length || !label) return null;
+
   return (
     <div className="rounded-xl border border-white/10 bg-[#0f1117]/90 backdrop-blur-xl p-4 shadow-2xl max-w-[320px]">
       <div className="text-sm font-semibold text-white mb-3 border-b border-white/10 pb-2">
         {label}
       </div>
+
       <div className="space-y-3">
         {payload.map((entry) => (
           <div
@@ -113,6 +114,21 @@ export const ComparisonRadarChart = memo(
       { id: "table", label: "Table", icon: <Table2 className="w-4 h-4" /> },
     ];
 
+    // Format confidence
+    const confPercent =
+      confidence != null ? Math.round(confidence * 100) : null;
+
+    let badgeColor = "bg-blue-500 hover:bg-blue-600";
+    if (confPercent != null) {
+      if (confPercent >= 80)
+        badgeColor =
+          "bg-green-500/20 border border-green-500/40 text-green-500";
+      else if (confPercent >= 50)
+        badgeColor =
+          "bg-yellow-500/20 border border-yellow-500/40 text-yellow-500";
+      else badgeColor = "bg-red-500/20 border border-red-500/40 text-red-500";
+    }
+
     return (
       <motion.div
         initial={{ opacity: 0, y: 10 }}
@@ -124,6 +140,15 @@ export const ComparisonRadarChart = memo(
           <h3 className="text-xl font-semibold bg-gradient-to-r from-gray-100 to-gray-400 bg-clip-text text-transparent flex items-center gap-2">
             Comparison
           </h3>
+          <div className="section-media my-4 space-y-4">
+            {confPercent != null && (
+              <div className="flex items-center gap-2 mb-2">
+                <Badge className={`text-white shadow-sm ${badgeColor}`}>
+                  Confidence: {confPercent}%
+                </Badge>
+              </div>
+            )}
+          </div>
           <div className="flex rounded-lg bg-gray-200/10 p-1.5 gap-0.5">
             {tabs.map(({ id, label, icon }) => (
               <button
@@ -142,7 +167,7 @@ export const ComparisonRadarChart = memo(
             ))}
           </div>
         </div>
-        <SectionMedia confidence={confidence} images={images} />
+        {/* <SectionMedia confidence={confidence} images={images} />*/}
 
         <div className="bg-white/5 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-sm">
           {view === "radar" && (
