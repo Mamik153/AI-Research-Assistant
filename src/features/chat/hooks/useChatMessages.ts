@@ -33,7 +33,13 @@ export const useChatMessages = (
     useEffect(() => {
         if (currentJob) {
             setChatMessages((prev) => {
-                const existingIndex = prev.findIndex((m) => m.type === 'assistant');
+                let existingIndex = -1;
+                for (let i = prev.length - 1; i >= 0; i--) {
+                    if (prev[i].type === 'assistant') {
+                        existingIndex = i;
+                        break;
+                    }
+                }
 
                 const assistantMessage: ChatMessage = {
                     id: existingIndex >= 0 ? prev[existingIndex].id : currentJob.jobId,
@@ -65,12 +71,32 @@ export const useChatMessages = (
 
             if (!currentJob) {
                 setChatMessages((prev) => {
-                    const lastMsg = prev[prev.length - 1];
-                    if (
-                        lastMsg?.researchJob?.status === 'failed' &&
-                        lastMsg.researchJob.message === error
-                    ) {
-                        return prev;
+                    let existingIndex = -1;
+                    for (let i = prev.length - 1; i >= 0; i--) {
+                        if (prev[i].type === 'assistant') {
+                            existingIndex = i;
+                            break;
+                        }
+                    }
+
+                    if (existingIndex >= 0) {
+                        const existingMsg = prev[existingIndex];
+                        if (existingMsg.researchJob?.status === 'failed' && existingMsg.researchJob?.message === error) {
+                            return prev;
+                        }
+
+                        const updated = [...prev];
+                        updated[existingIndex] = {
+                            ...existingMsg,
+                            researchJob: {
+                                jobId: existingMsg.researchJob?.jobId || 'submission-failed',
+                                status: 'failed',
+                                message: error,
+                                createdAt: existingMsg.researchJob?.createdAt || new Date().toISOString(),
+                                topic: existingMsg.researchJob?.topic || 'Research Request',
+                            }
+                        };
+                        return updated;
                     }
 
                     const errorMessage: ChatMessage = {
