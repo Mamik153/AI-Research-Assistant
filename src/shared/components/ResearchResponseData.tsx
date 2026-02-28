@@ -21,7 +21,7 @@ export const ResearchResponseData = ({
     return null;
   }
 
-  console.log(currentJob);
+  // console.log(currentJob);
 
   return (
     <div className="w-full relative text-white mt-20">
