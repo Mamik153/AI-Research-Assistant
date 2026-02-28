@@ -7,17 +7,16 @@ export default async function handler(req, res) {
     'https://ai-research-assistant-backend-production-7c89.up.railway.app';
   const API_KEY = process.env.API_KEY || '';
 
-  // Reconstruct the backend URL from the catch-all path segments
-  // req.query.path is an array like ['research', 'dynamic']
-  const pathSegments = req.query.path || [];
-  const backendPath = `/api/${pathSegments.join('/')}`;
-  const url = new URL(backendPath, API_BASE_URL);
-
-  // Forward query parameters
-  const queryString = new URL(req.url, `http://${req.headers.host}`).search;
-  if (queryString) {
-    url.search = queryString;
-  }
+  // `req.url` from Vercel might be `/api/proxy?path=research/dynamic` or just `/api/something` depending on the rewrite.
+  // We'll safely parse the actual requested URL to forward it.
+  
+  // Easiest approach given a rewrite `source: /api/(.*)`, `destination: /api/proxy.js`:
+  // The Vercel function often receives the original URL in `req.url` (e.g., `/api/research/dynamic`).
+  const requestUrl = new URL(req.url, `http://${req.headers.host}`);
+  
+  // Reconstruct the target URL
+  const targetUrl = new URL(requestUrl.pathname, API_BASE_URL);
+  targetUrl.search = requestUrl.search; // Forward query params
 
   // Build headers, forwarding relevant ones from the original request
   const headers = {
@@ -40,18 +39,16 @@ export default async function handler(req, res) {
         typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
     }
 
-    const response = await fetch(url.toString(), fetchOptions);
+    const response = await fetch(targetUrl.toString(), fetchOptions);
 
     // Forward the status code and response headers
     res.status(response.status);
 
-    // Forward content-type header
     const contentType = response.headers.get('content-type');
     if (contentType) {
       res.setHeader('Content-Type', contentType);
     }
 
-    // Stream the response body
     const body = await response.text();
     res.send(body);
   } catch (error) {
@@ -59,6 +56,7 @@ export default async function handler(req, res) {
     res.status(502).json({
       error: 'Bad Gateway',
       message: 'Failed to reach the backend service.',
+      details: error.message
     });
   }
 }

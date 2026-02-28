@@ -1,11 +1,15 @@
 {
   "rewrites": [
     {
-      "source": "/static/:path*",
-      "destination": "https://ai-research-assistant-backend-production-7c89.up.railway.app/static/:path*"
+      "source": "/api/(.*)",
+      "destination": "/api/proxy"
     },
     {
-      "source": "/((?!api/).*)",
+      "source": "/static/(.*)",
+      "destination": "https://ai-research-assistant-backend-production-7c89.up.railway.app/static/$1"
+    },
+    {
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
