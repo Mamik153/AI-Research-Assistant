@@ -93,10 +93,6 @@ export const submitResearch = async (topic: string): Promise<ResearchJobResponse
             body: JSON.stringify(requestBody),
         });
 
-        console.log("API KEY", config.apiKey)
-
-        console.log(response);
-
         return await handleResponse<ResearchJobResponse>(response);
     } catch (error) {
         if (error instanceof TypeError) {
