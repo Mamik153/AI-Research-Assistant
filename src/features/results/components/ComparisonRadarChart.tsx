@@ -94,7 +94,7 @@ function CustomChartTooltip({ active, payload, label }: CustomTooltipProps) {
 }
 
 export const ComparisonRadarChart = memo(
-  ({ comparisonData, confidence, images }: ComparisonRadarChartProps) => {
+  ({ comparisonData, confidence }: ComparisonRadarChartProps) => {
     const [view, setView] = useState<ChartView>("radar");
     const { criteria, items } = comparisonData;
     if (!criteria.length || !items.length) return null;
