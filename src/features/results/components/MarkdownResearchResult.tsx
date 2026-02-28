@@ -2,6 +2,7 @@ import type { JSX } from "react";
 import type { ResearchResultProps } from "../types/result.types";
 import "./ResearchResult.css";
 import { BadgePlus, Copy, Download } from "lucide-react";
+import { toast } from "sonner";
 
 /**
  * Enhanced markdown rendering function
@@ -265,10 +266,10 @@ export const MarkdownResearchResult = ({ result }: ResearchResultProps) => {
   const handleCopyReport = async () => {
     try {
       await navigator.clipboard.writeText(result.report!);
-      // You could add a toast notification here
-      //console.log('Report copied to clipboard');
+      toast.success("Report copied to clipboard");
     } catch (err) {
       console.error("Failed to copy report:", err);
+      toast.error("Failed to copy report");
     }
   };
 
@@ -283,6 +284,7 @@ export const MarkdownResearchResult = ({ result }: ResearchResultProps) => {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    toast.success("Report downloaded successfully");
   };
 
   return (

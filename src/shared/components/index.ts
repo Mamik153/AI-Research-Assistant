@@ -18,6 +18,6 @@ export * from './icons';
 
 // Other shared components
 export { ErrorBoundary } from './ErrorBoundary';
-export { default as LoadingAnimation } from './LoadingAnimation';
+export { LoadingAnimation } from './LoadingAnimation';
 export { AbstractModal } from './AbstractModal';
-export { default as ResearchResponseData } from './ResearchResponseData';
+export { ResearchResponseData } from './ResearchResponseData';

@@ -2,45 +2,18 @@
 
 export type LayoutMode = 'centered' | 'chat';
 
-export type AppView = 'DASHBOARD' | 'MINDMAP' | 'FLASHCARDS';
-
 // Error Handling Types
 export interface ErrorBoundaryState {
   hasError: boolean;
   error?: Error;
 }
 
-// Gemini-specific types
-export interface GroundingChunk {
-  web?: {
-    uri: string;
-    title: string;
-  };
-}
-
-export interface GeminiResearchResult {
-  summary: string;
-  groundingChunks: GroundingChunk[];
-  rawText: string;
-}
-
-// Mind Map types
-export interface MindMapNode {
-  id: string;
-  label: string;
-  group: number;
-  description?: string;
-}
-
-export interface MindMapLink {
-  source: string;
-  target: string;
-  value: number;
-}
-
-export interface MindMapData {
-  nodes: MindMapNode[];
-  links: MindMapLink[];
+// API Error type — shared across features
+export interface ApiError {
+  message: string;
+  status?: number;
+  type: 'network' | 'server' | 'validation' | 'timeout' | 'payload_too_large';
+  code?: string;
 }
 
 // Flash Card types
@@ -49,7 +22,3 @@ export interface FlashCard {
   back: string;
 }
 
-export interface StructuredResearchData {
-  mindMap: MindMapData;
-  flashCards: FlashCard[];
-}

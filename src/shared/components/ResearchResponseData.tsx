@@ -3,7 +3,7 @@ import type {
   ResearchJob,
   ResearchResult as ResearchResultType,
 } from "@/features/research";
-import LoadingAnimation from "./LoadingAnimation";
+import { LoadingAnimation } from "./LoadingAnimation";
 
 interface ResearchResponseDataProps {
   isVisible: boolean;
@@ -11,7 +11,7 @@ interface ResearchResponseDataProps {
   result: ResearchResultType | null;
 }
 
-const ResearchResponseData = ({
+export const ResearchResponseData = ({
   isVisible,
   currentJob,
   result,
@@ -20,9 +20,6 @@ const ResearchResponseData = ({
   if (!isVisible) {
     return null;
   }
-
-  ///console.log("currentJob: ", currentJob);
-  ////console.log("result: ", result);
 
   return (
     <div className="w-full relative text-white mt-20">
@@ -63,5 +60,3 @@ const ResearchResponseData = ({
     </div>
   );
 };
-
-export default ResearchResponseData;

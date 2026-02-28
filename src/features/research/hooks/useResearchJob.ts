@@ -34,8 +34,6 @@ export const useResearchJob = (): UseResearchJobReturn => {
 
     // Handle status updates from polling
     const handleStatusUpdate = useCallback((statusResponse: ResearchJobResponse) => {
-        // console.log('Status update received:', statusResponse);
-
         setCurrentJob(prevJob => {
             if (!prevJob) return null;
 
@@ -46,15 +44,13 @@ export const useResearchJob = (): UseResearchJobReturn => {
                 chainOfThought: statusResponse.chain_of_thought ?? prevJob.chainOfThought,
             };
 
-            //console.log('Updated job:', updatedJob);
+
 
             // Handle completed job
             if (statusResponse.status === 'completed') {
-                // console.log('Job completed, fetching results...');
                 setIsLoading(true);
                 getResearchResult(statusResponse.job_id)
                     .then((resultResponse) => {
-                        // console.log('Result response:', resultResponse);
                         if (resultResponse.report || resultResponse.summary || (resultResponse.papers && resultResponse.papers.length > 0)) {
                             const parsed = parseSummary(resultResponse.summary);
                             const hasFlatStructure =
@@ -93,7 +89,7 @@ export const useResearchJob = (): UseResearchJobReturn => {
                                 sectionConfidence,
                                 sectionImages,
                             };
-                            //console.log('Setting result:', researchResult);
+
                             setResult(researchResult);
                             setError(null);
                         } else {

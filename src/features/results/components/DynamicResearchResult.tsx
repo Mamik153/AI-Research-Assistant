@@ -9,7 +9,7 @@ import { StructuredSectionsGrid } from "./StructuredSectionsGrid";
 import { Download, RefreshCw, Loader2 } from "lucide-react";
 import { downloadResearchPDF } from "@/features/export";
 import { Button } from "@/shared/components/ui/button";
-//import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/shared/components/ui/tabs';
+
 import { Separator } from "@/shared/components/ui/separator";
 import { OverviewCard } from "./OverviewCard";
 import { motion } from "motion/react";
@@ -55,8 +55,6 @@ export const DynamicResearchResult = ({ result }: ResearchResultProps) => {
   const hasKeyInsights = result.keyInsights && result.keyInsights.length > 0;
   const hasStructuredSections = result.parsedSummary?.structured_sections;
   const hasPapers = result.papers && result.papers.length > 0;
-
-  //console.log("result===>", result.parsedSummary!.structured_sections);
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
@@ -150,29 +148,6 @@ export const DynamicResearchResult = ({ result }: ResearchResultProps) => {
           <PapersGrid papers={result.papers!} />
         </motion.div>
       )}
-      {/* </Tabs> */}
-
-      {/* Scroll Down Cue */}
-      {/* <AnimatePresence>
-        {showScrollCue && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.5, delay: 1.5 }}
-            className="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 cursor-pointer"
-            onClick={scrollToBottom}
-          >
-            <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-              className="bg-white/5 backdrop-blur-md border border-white/10 rounded-full p-2.5 shadow-xl hover:bg-white/10 hover:border-white/20 transition-colors"
-            >
-              <ChevronDown className="w-5 h-5 text-white/50" />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence> */}
       {/* Actions Footer */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 z-50">
         <motion.div

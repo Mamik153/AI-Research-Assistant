@@ -2,43 +2,31 @@ import { useState, useEffect, useCallback } from "react";
 import { ErrorBoundary } from "@/shared/components";
 import { useResearchJob } from "@/features/research";
 import { AIInputComponent } from "@/features/research";
-import { ChatContainer } from "@/features/chat";
+import { ChatContainer, useChatMessages } from "@/features/chat";
+import { Toaster } from "sonner";
 import "./App.css";
 import type { LayoutMode } from "@/shared/types";
-import type { ChatMessage } from "@/features/chat/types/chat.types";
 
 function App() {
   const [layoutMode, setLayoutMode] = useState<LayoutMode>("centered");
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const { submitResearch, isLoading, error, currentJob, result } =
     useResearchJob();
+  const { chatMessages, addUserMessage } = useChatMessages(
+    currentJob,
+    result,
+    error,
+  );
 
   // Handle research topic submission
   const handleSubmit = useCallback(
     (topic: string) => {
-      // 1. Set transitioning flag
       setIsTransitioning(true);
-
-      // 2. Change layout mode to chat (triggers animation)
       setLayoutMode("chat");
-
-      // 3. Add user message to chat
-      const userMessage: ChatMessage = {
-        id: `user-${Date.now()}`,
-        type: "user",
-        content: topic,
-        timestamp: new Date().toISOString(),
-      };
-      setChatMessages((prev) => [...prev, userMessage]);
-
-      // 4. Submit research job
+      addUserMessage(topic);
       submitResearch(topic);
-
-      // 5. Reset transitioning flag after animation
-      //setTimeout(() => setIsTransitioning(false), 500);
     },
-    [submitResearch],
+    [submitResearch, addUserMessage],
   );
 
   // Handle position transition complete
@@ -46,91 +34,12 @@ function App() {
     setIsTransitioning(false);
   }, []);
 
-  // Once we have a job, transition is done — show chat (loading/result). Input is already hidden.
+  // Once we have a job, transition is done
   useEffect(() => {
     if (currentJob) {
       setIsTransitioning(false);
     }
   }, [currentJob]);
-
-  // Sync research job state with chat messages
-  useEffect(() => {
-    if (currentJob) {
-      setChatMessages((prev) => {
-        // Check if assistant message already exists
-        const existingIndex = prev.findIndex((m) => m.type === "assistant");
-
-        const assistantMessage: ChatMessage = {
-          id: existingIndex >= 0 ? prev[existingIndex].id : currentJob.jobId,
-          type: "assistant",
-          content: "",
-          timestamp:
-            existingIndex >= 0
-              ? prev[existingIndex].timestamp
-              : currentJob.createdAt,
-          researchJob: currentJob,
-          researchResult: result || undefined,
-        };
-
-        if (existingIndex >= 0) {
-          // Update existing assistant message
-          const updated = [...prev];
-          updated[existingIndex] = assistantMessage;
-          return updated;
-        } else {
-          // Add new assistant message
-          return [...prev, assistantMessage];
-        }
-      });
-    }
-  }, [currentJob, result]);
-
-  // Handle errors
-  useEffect(() => {
-    if (error) {
-      console.error("Research error:", error);
-
-      // If there's an error but no current job, it means submission failed
-      // We need to show this error in the chat
-      if (!currentJob) {
-        setChatMessages((prev) => {
-          // Check if the last message is already this error to avoid duplicates
-          const lastMsg = prev[prev.length - 1];
-          if (
-            lastMsg?.researchJob?.status === "failed" &&
-            lastMsg.researchJob.message === error
-          ) {
-            return prev;
-          }
-
-          const errorMessage: ChatMessage = {
-            id: `error-${Date.now()}`,
-            type: "assistant",
-            content: "",
-            timestamp: new Date().toISOString(),
-            researchJob: {
-              jobId: "submission-failed",
-              status: "failed",
-              message: error,
-              createdAt: new Date().toISOString(),
-              topic: "Research Request",
-            },
-          };
-
-          return [...prev, errorMessage];
-        });
-      }
-    }
-  }, [error, currentJob]);
-
-  // Placeholder handlers for future features
-  const handlePlusClick = useCallback(() => {
-    // console.log('Plus button clicked')
-  }, []);
-
-  const handleMicClick = useCallback(() => {
-    // console.log('Microphone button clicked')
-  }, []);
 
   return (
     <ErrorBoundary>
@@ -189,8 +98,6 @@ function App() {
         {!currentJob && !result && (
           <AIInputComponent
             onSubmit={handleSubmit}
-            onPlusClick={handlePlusClick}
-            onMicClick={handleMicClick}
             placeholder="Enter a topic to research"
             disabled={isLoading}
             isAtBottom={layoutMode === "chat"}
@@ -198,6 +105,7 @@ function App() {
             isLoading={isLoading}
           />
         )}
+        <Toaster theme="dark" position="bottom-right" richColors />
       </div>
     </ErrorBoundary>
   );

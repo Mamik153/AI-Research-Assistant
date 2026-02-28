@@ -1,6 +1,9 @@
 import type { ParsedSummary } from '@/features/results';
 import type { ResearchPaper } from '@/features/papers';
 
+// Re-export ApiError from shared types for consumers that import from this feature
+export type { ApiError } from '@/shared/types';
+
 // API Response Types
 export interface ResearchJobResponse {
   job_id: string;
@@ -89,15 +92,8 @@ export interface UsePollingReturn {
   isPolling: boolean;
 }
 
-// Error Handling Types
-export interface ApiError {
-  message: string;
-  status?: number;
-  type: 'network' | 'server' | 'validation' | 'timeout';
-  code?: string;
-}
-
 // API Request Types
 export interface ResearchSubmissionRequest {
   topic: string;
 }
+

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import {
   RadarChart,
   PolarGrid,
@@ -92,202 +92,200 @@ function CustomChartTooltip({ active, payload, label }: CustomTooltipProps) {
   );
 }
 
-export const ComparisonRadarChart = ({
-  comparisonData,
-  confidence,
-  images,
-}: ComparisonRadarChartProps) => {
-  const [view, setView] = useState<ChartView>("radar");
-  const { criteria, items } = comparisonData;
-  if (!criteria.length || !items.length) return null;
+export const ComparisonRadarChart = memo(
+  ({ comparisonData, confidence, images }: ComparisonRadarChartProps) => {
+    const [view, setView] = useState<ChartView>("radar");
+    const { criteria, items } = comparisonData;
+    if (!criteria.length || !items.length) return null;
 
-  const data = criteria.map((subject, i) => {
-    const point: Record<string, string | number> = { subject };
-    items.forEach((item) => {
-      const raw = item.values[i];
-      point[item.name] = quantize(raw ?? "");
+    const data = criteria.map((subject, i) => {
+      const point: Record<string, string | number> = { subject };
+      items.forEach((item) => {
+        const raw = item.values[i];
+        point[item.name] = quantize(raw ?? "");
+      });
+      return point;
     });
-    return point;
-  });
 
-  const tabs: { id: ChartView; label: string; icon: React.ReactNode }[] = [
-    { id: "radar", label: "Radar", icon: <RadarIcon className="w-4 h-4" /> },
-    { id: "bar", label: "Bar", icon: <BarChart2 className="w-4 h-4" /> },
-    { id: "table", label: "Table", icon: <Table2 className="w-4 h-4" /> },
-  ];
+    const tabs: { id: ChartView; label: string; icon: React.ReactNode }[] = [
+      { id: "radar", label: "Radar", icon: <RadarIcon className="w-4 h-4" /> },
+      { id: "bar", label: "Bar", icon: <BarChart2 className="w-4 h-4" /> },
+      { id: "table", label: "Table", icon: <Table2 className="w-4 h-4" /> },
+    ];
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: 0.7 }}
-      className="w-full mb-8"
-    >
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-        <h3 className="text-xl font-semibold bg-gradient-to-r from-gray-100 to-gray-400 bg-clip-text text-transparent flex items-center gap-2">
-          Comparison
-        </h3>
-        <div className="flex rounded-lg bg-gray-200/10 p-1.5 gap-0.5">
-          {tabs.map(({ id, label, icon }) => (
-            <button
-              key={id}
-              type="button"
-              onClick={() => setView(id)}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                view === id
-                  ? "bg-white text-gray-800"
-                  : "text-gray-500 hover:text-gray-400"
-              }`}
-            >
-              {icon}
-              {label}
-            </button>
-          ))}
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.7 }}
+        className="w-full mb-8"
+      >
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+          <h3 className="text-xl font-semibold bg-gradient-to-r from-gray-100 to-gray-400 bg-clip-text text-transparent flex items-center gap-2">
+            Comparison
+          </h3>
+          <div className="flex rounded-lg bg-gray-200/10 p-1.5 gap-0.5">
+            {tabs.map(({ id, label, icon }) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setView(id)}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                  view === id
+                    ? "bg-white text-gray-800"
+                    : "text-gray-500 hover:text-gray-400"
+                }`}
+              >
+                {icon}
+                {label}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
-      <SectionMedia confidence={confidence} images={images} />
+        <SectionMedia confidence={confidence} images={images} />
 
-      <div className="bg-white/5 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-sm">
-        {view === "radar" && (
-          <div className="min-h-[380px] w-full" style={{ minWidth: 280 }}>
-            <div className="h-[380px]">
+        <div className="bg-white/5 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-sm">
+          {view === "radar" && (
+            <div className="min-h-[380px] w-full" style={{ minWidth: 280 }}>
+              <div className="h-[380px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <RadarChart
+                    data={data}
+                    margin={{ top: 20, right: 30, bottom: 20, left: 30 }}
+                  >
+                    <PolarGrid stroke="#9fa8b6ff" />
+                    <PolarAngleAxis
+                      dataKey="subject"
+                      tick={{ fill: "#9ca3af", fontSize: 11 }}
+                      tickLine={{ stroke: "#4b5563" }}
+                    />
+                    <PolarRadiusAxis
+                      angle={90}
+                      domain={[0, 3]}
+                      tick={{ fill: "#6b7280", fontSize: 10 }}
+                      tickCount={4}
+                    />
+                    {items.map((item, idx) => (
+                      <Radar
+                        key={item.name}
+                        name={item.name}
+                        dataKey={item.name}
+                        stroke={COLORS[idx % COLORS.length]}
+                        fill={COLORS[idx % COLORS.length]}
+                        fillOpacity={0.3}
+                        strokeWidth={2}
+                      />
+                    ))}
+                    <Tooltip content={<CustomChartTooltip />} cursor={false} />
+                  </RadarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          )}
+
+          {view === "bar" && (
+            <div className="h-[380px] w-full min-h-0 overflow-x-auto">
               <ResponsiveContainer width="100%" height="100%">
-                <RadarChart
+                <BarChart
                   data={data}
-                  margin={{ top: 20, right: 30, bottom: 20, left: 30 }}
+                  margin={{ top: 16, right: 16, bottom: 16, left: 8 }}
+                  layout="vertical"
                 >
-                  <PolarGrid stroke="#9fa8b6ff" />
-                  <PolarAngleAxis
-                    dataKey="subject"
-                    tick={{ fill: "#9ca3af", fontSize: 11 }}
-                    tickLine={{ stroke: "#4b5563" }}
-                  />
-                  <PolarRadiusAxis
-                    angle={90}
+                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                  <XAxis
+                    type="number"
                     domain={[0, 3]}
                     tick={{ fill: "#6b7280", fontSize: 10 }}
-                    tickCount={4}
+                  />
+                  <YAxis
+                    type="category"
+                    dataKey="subject"
+                    width={120}
+                    tick={{ fill: "#9ca3af", fontSize: 11 }}
+                    tickLine={false}
+                  />
+                  <Tooltip
+                    content={<CustomChartTooltip />}
+                    cursor={{ fill: "rgba(255, 255, 255, 0.05)" }}
                   />
                   {items.map((item, idx) => (
-                    <Radar
+                    <Bar
                       key={item.name}
-                      name={item.name}
                       dataKey={item.name}
-                      stroke={COLORS[idx % COLORS.length]}
                       fill={COLORS[idx % COLORS.length]}
-                      fillOpacity={0.3}
-                      strokeWidth={2}
+                      radius={[0, 4, 4, 0]}
+                      cursor="pointer"
                     />
                   ))}
-                  <Tooltip content={<CustomChartTooltip />} cursor={false} />
-                </RadarChart>
+                </BarChart>
               </ResponsiveContainer>
             </div>
-          </div>
-        )}
+          )}
 
-        {view === "bar" && (
-          <div className="h-[380px] w-full min-h-0 overflow-x-auto">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={data}
-                margin={{ top: 16, right: 16, bottom: 16, left: 8 }}
-                layout="vertical"
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                <XAxis
-                  type="number"
-                  domain={[0, 3]}
-                  tick={{ fill: "#6b7280", fontSize: 10 }}
-                />
-                <YAxis
-                  type="category"
-                  dataKey="subject"
-                  width={120}
-                  tick={{ fill: "#9ca3af", fontSize: 11 }}
-                  tickLine={false}
-                />
-                <Tooltip
-                  content={<CustomChartTooltip />}
-                  cursor={{ fill: "rgba(255, 255, 255, 0.05)" }}
-                />
-                {items.map((item, idx) => (
-                  <Bar
-                    key={item.name}
-                    dataKey={item.name}
-                    fill={COLORS[idx % COLORS.length]}
-                    radius={[0, 4, 4, 0]}
-                    cursor="pointer"
-                  />
-                ))}
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        )}
-
-        {view === "table" && (
-          <div className="overflow-x-auto rounded-xl border border-white/10">
-            <table className="w-full text-sm text-left">
-              <thead>
-                <tr className="border-b border-white/10 bg-white/5">
-                  <th className="px-4 py-3 text-gray-300 font-semibold">
-                    Criteria
-                  </th>
-                  {items.map((item, idx) => (
-                    <th
-                      key={item.name}
-                      className="px-4 py-3 font-semibold"
-                      style={{ color: COLORS[idx % COLORS.length] }}
-                    >
-                      {item.name}
+          {view === "table" && (
+            <div className="overflow-x-auto rounded-xl border border-white/10">
+              <table className="w-full text-sm text-left">
+                <thead>
+                  <tr className="border-b border-white/10 bg-white/5">
+                    <th className="px-4 py-3 text-gray-300 font-semibold">
+                      Criteria
                     </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {criteria.map((subject, i) => (
-                  <tr
-                    key={i}
-                    className="border-b border-white/10 hover:bg-white/5"
-                  >
-                    <td className="px-4 py-3 text-gray-300">{subject}</td>
-                    {items.map((item) => (
-                      <td key={item.name} className="px-4 py-3 text-gray-300">
-                        {item.values[i] ?? "—"}
-                      </td>
+                    {items.map((item, idx) => (
+                      <th
+                        key={item.name}
+                        className="px-4 py-3 font-semibold"
+                        style={{ color: COLORS[idx % COLORS.length] }}
+                      >
+                        {item.name}
+                      </th>
                     ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+                </thead>
+                <tbody>
+                  {criteria.map((subject, i) => (
+                    <tr
+                      key={i}
+                      className="border-b border-white/10 hover:bg-white/5"
+                    >
+                      <td className="px-4 py-3 text-gray-300">{subject}</td>
+                      {items.map((item) => (
+                        <td key={item.name} className="px-4 py-3 text-gray-300">
+                          {item.values[i] ?? "—"}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
 
-        {view !== "table" && (
-          <div className="mt-8 flex flex-wrap justify-center gap-x-3 gap-y-3">
-            {items.map((item, idx) => {
-              const color = COLORS[idx % COLORS.length];
-              return (
-                <div
-                  key={item.name}
-                  className="flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm transition-colors hover:bg-white/10 cursor-default shadow-sm max-w-full"
-                >
+          {view !== "table" && (
+            <div className="mt-8 flex flex-wrap justify-center gap-x-3 gap-y-3">
+              {items.map((item, idx) => {
+                const color = COLORS[idx % COLORS.length];
+                return (
                   <div
-                    className="w-2.5 h-2.5 rounded-full shadow-sm shrink-0"
-                    style={{
-                      backgroundColor: color,
-                      boxShadow: `0 0 8px ${color}80`,
-                    }}
-                  />
-                  <span className="text-xs font-medium text-gray-200 tracking-wide truncate">
-                    {item.name}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </motion.div>
-  );
-};
+                    key={item.name}
+                    className="flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm transition-colors hover:bg-white/10 cursor-default shadow-sm max-w-full"
+                  >
+                    <div
+                      className="w-2.5 h-2.5 rounded-full shadow-sm shrink-0"
+                      style={{
+                        backgroundColor: color,
+                        boxShadow: `0 0 8px ${color}80`,
+                      }}
+                    />
+                    <span className="text-xs font-medium text-gray-200 tracking-wide truncate">
+                      {item.name}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </motion.div>
+    );
+  },
+);

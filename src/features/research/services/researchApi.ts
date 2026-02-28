@@ -4,8 +4,10 @@ import type {
     ResearchSubmissionRequest,
     ApiError
 } from '../types/research.types';
+import { config } from '@/shared/config/env';
 
-const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/api`;
+// All requests go to same origin — the BFF proxy handles routing and auth
+const API_BASE_URL = '/api';
 
 // Helper function to create ApiError objects
 const createApiError = (message: string, status?: number, type: ApiError['type'] = 'network', code?: string): ApiError => ({
@@ -20,73 +22,91 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
     if (!response.ok) {
         let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
         let errorCode: string | undefined;
+        let errorType: ApiError['type'] = 'server';
 
         try {
             const errorData = await response.json();
-            errorMessage = errorData.detail || errorData.message || errorData.error || errorMessage;
+
+            // Handle 422 validation errors (detail is an array of objects)
+            if (response.status === 422 && Array.isArray(errorData.detail)) {
+                errorMessage = errorData.detail[0]?.msg || 'Validation error';
+                errorType = 'validation';
+            } else {
+                errorMessage = errorData.detail || errorData.message || errorData.error || errorMessage;
+            }
+
             errorCode = errorData.code;
         } catch {
             // If we can't parse the error response, use the default message
         }
 
-        throw createApiError(errorMessage, response.status, 'server', errorCode);
+        // Map specific status codes to error types
+        if (response.status === 401) {
+            errorType = 'server';
+            errorMessage = 'Authentication failed. Please check server configuration.';
+        } else if (response.status === 413) {
+            errorType = 'payload_too_large';
+            errorMessage = 'Request payload is too large. Please shorten your topic.';
+        } else if (response.status === 400) {
+            errorType = 'validation';
+        }
+
+        throw createApiError(errorMessage, response.status, errorType, errorCode);
     }
 
     try {
         return await response.json();
-    } catch (error) {
+    } catch {
         throw createApiError('Invalid response format from server', response.status, 'server');
     }
 };
 
 /**
  * Submit a research topic to start a new research job
- * @param topic - The research topic to submit
- * @returns Promise<ResearchJobResponse> - The job details including job_id
- * @throws ApiError - When the request fails
  */
 export const submitResearch = async (topic: string): Promise<ResearchJobResponse> => {
-    if (!topic.trim()) {
+    const trimmedTopic = topic.trim();
+
+    if (!trimmedTopic) {
         throw createApiError('Research topic cannot be empty', undefined, 'validation');
     }
 
-    const requestBody: ResearchSubmissionRequest = { topic: topic.trim() };
+    if (trimmedTopic.length < 3) {
+        throw createApiError('Topic must be at least 3 characters', undefined, 'validation');
+    }
+
+    if (trimmedTopic.length > 500) {
+        throw createApiError('Topic must be at most 500 characters', undefined, 'validation');
+    }
+
+    const requestBody: ResearchSubmissionRequest = { topic: trimmedTopic };
 
     try {
-        const useDynamic = import.meta.env.VITE_USE_DYNAMIC_UI === 'true';
+        const useDynamic = config.useDynamicUI;
         const endpoint = useDynamic ? `${API_BASE_URL}/research/dynamic` : `${API_BASE_URL}/research`;
 
         const response = await fetch(endpoint, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${import.meta.env.API_KEY}`
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(requestBody),
         });
 
         return await handleResponse<ResearchJobResponse>(response);
     } catch (error) {
         if (error instanceof TypeError) {
-            // Network error (fetch failed)
             throw createApiError('Unable to connect to the research service. Please check your connection.', undefined, 'network');
         }
 
         if (error && typeof error === 'object' && 'type' in error) {
-            // Re-throw ApiError objects
             throw error;
         }
 
-        // Unknown error
         throw createApiError('An unexpected error occurred while submitting research', undefined, 'network');
     }
 };
 
 /**
  * Get the current status of a research job
- * @param jobId - The job ID to check status for
- * @returns Promise<ResearchJobResponse> - The current job status and details
- * @throws ApiError - When the request fails
  */
 export const getJobStatus = async (jobId: string): Promise<ResearchJobResponse> => {
     if (!jobId.trim()) {
@@ -96,35 +116,25 @@ export const getJobStatus = async (jobId: string): Promise<ResearchJobResponse> 
     try {
         const response = await fetch(`${API_BASE_URL}/research/${encodeURIComponent(jobId)}`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${import.meta.env.API_KEY}`
-            },
+            headers: { 'Content-Type': 'application/json' },
         });
 
         return await handleResponse<ResearchJobResponse>(response);
     } catch (error) {
         if (error instanceof TypeError) {
-            // Network error (fetch failed)
             throw createApiError('Unable to connect to the research service. Please check your connection.', undefined, 'network');
         }
 
         if (error && typeof error === 'object' && 'type' in error) {
-            // Re-throw ApiError objects
             throw error;
         }
 
-        // Unknown error
         throw createApiError('An unexpected error occurred while checking job status', undefined, 'network');
     }
 };
 
 /**
  * Poll job status with automatic retry and interval management
- * @param jobId - The job ID to poll
- * @param onStatusUpdate - Callback function called with each status update
- * @param intervalMs - Polling interval in milliseconds (default: 3000)
- * @returns Object with stop function to cancel polling
  */
 export const pollJobStatus = (
     jobId: string,
@@ -155,7 +165,6 @@ export const pollJobStatus = (
             );
 
             if (isPolling && isTransient) {
-                // Transient error, show message but keep polling
                 const transientMessage = apiError.message
                     ? `${apiError.message} (Retrying in background...)`
                     : 'Server is busy, retrying in background...';
@@ -165,12 +174,10 @@ export const pollJobStatus = (
                     created_at: new Date().toISOString(),
                     message: transientMessage
                 });
-                // Wait a bit longer to retry
                 timeoutId = setTimeout(poll, intervalMs * 2);
                 return;
             }
 
-            // Pass error to callback as a failed status
             const errorStatus: ResearchJobResponse = {
                 job_id: jobId,
                 status: 'failed',
@@ -183,7 +190,6 @@ export const pollJobStatus = (
         }
     };
 
-    // Start polling immediately
     poll();
 
     return {
@@ -195,12 +201,10 @@ export const pollJobStatus = (
             }
         }
     };
-};/**
- *
- Get the completed research result for a job
- * @param jobId - The job ID to get results for
- * @returns Promise<ResearchResultResponse> - The research result with report content
- * @throws ApiError - When the request fails or result is not available
+};
+
+/**
+ * Get the completed research result for a job
  */
 export const getResearchResult = async (jobId: string): Promise<ResearchResultResponse> => {
     if (!jobId.trim()) {
@@ -208,34 +212,26 @@ export const getResearchResult = async (jobId: string): Promise<ResearchResultRe
     }
 
     try {
-        const useDynamic = import.meta.env.VITE_USE_DYNAMIC_UI === 'true';
-        // For dynamic: /research/dynamic/:jobId/result
-        // For legacy: /research/:jobId/result
+        const useDynamic = config.useDynamicUI;
         const endpoint = useDynamic
             ? `${API_BASE_URL}/research/dynamic/${encodeURIComponent(jobId)}/result`
             : `${API_BASE_URL}/research/${encodeURIComponent(jobId)}/result`;
 
         const response = await fetch(endpoint, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${import.meta.env.API_KEY}`
-            },
+            headers: { 'Content-Type': 'application/json' },
         });
 
         return await handleResponse<ResearchResultResponse>(response);
     } catch (error) {
         if (error instanceof TypeError) {
-            // Network error (fetch failed)
             throw createApiError('Unable to connect to the research service. Please check your connection.', undefined, 'network');
         }
 
         if (error && typeof error === 'object' && 'type' in error) {
-            // Re-throw ApiError objects
             throw error;
         }
 
-        // Unknown error
         throw createApiError('An unexpected error occurred while retrieving research results', undefined, 'network');
     }
 };

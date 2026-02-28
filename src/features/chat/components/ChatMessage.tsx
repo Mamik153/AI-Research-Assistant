@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { motion } from "motion/react";
 import type { ChatMessage as ChatMessageType } from "../types/chat.types";
-import ResearchResponseData from "@/shared/components/ResearchResponseData";
+import { ResearchResponseData } from "@/shared/components/ResearchResponseData";
 
 interface ChatMessageProps {
   message: ChatMessageType;

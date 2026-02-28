@@ -1,13 +1,14 @@
 import type { ResearchResultProps } from "../types/result.types";
 import { MarkdownResearchResult } from "./MarkdownResearchResult";
 import { DynamicResearchResult } from "./DynamicResearchResult";
+import { config } from "@/shared/config/env";
 
 /**
  * ResearchResult component that switches between Legacy Markdown and Dynamic UI
  * based on environment variable and data availability.
  */
 export const ResearchResult = ({ result }: ResearchResultProps) => {
-  const useDynamicUI = import.meta.env.VITE_USE_DYNAMIC_UI === "true";
+  const useDynamicUI = config.useDynamicUI;
 
   // Check if we have structured data available
   const hasStructuredData =

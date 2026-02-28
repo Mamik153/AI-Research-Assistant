@@ -4,16 +4,42 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig(({ mode }) => {
+  // Load ALL env vars (including non-VITE_ ones) for server-side proxy use only
   const env = loadEnv(mode, '.', '');
+
+  const apiBaseUrl = env.API_BASE_URL || 'http://localhost:8000';
+  const apiKey = env.API_KEY || '';
+
   return {
     server: {
       port: 5173,
       host: '0.0.0.0',
+      proxy: {
+        '/api': {
+          target: apiBaseUrl,
+          changeOrigin: true,
+          configure: (proxy) => {
+            proxy.on('proxyReq', (proxyReq) => {
+              if (apiKey) {
+                proxyReq.setHeader('Authorization', `Bearer ${apiKey}`);
+              }
+            });
+          },
+        },
+        '/static': {
+          target: apiBaseUrl,
+          changeOrigin: true,
+          configure: (proxy) => {
+            proxy.on('proxyReq', (proxyReq) => {
+              if (apiKey) {
+                proxyReq.setHeader('Authorization', `Bearer ${apiKey}`);
+              }
+            });
+          },
+        },
+      },
     },
     plugins: [react(), tailwindcss()],
-    define: {
-      'import.meta.env.API_KEY': JSON.stringify(env.API_KEY),
-    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),

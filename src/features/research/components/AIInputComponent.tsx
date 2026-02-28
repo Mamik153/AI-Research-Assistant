@@ -1,6 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "motion/react";
 import { ArrowUpIcon } from "@/shared/components/icons";
+import type {
+  SpeechRecognition,
+  SpeechRecognitionEvent,
+  SpeechRecognitionErrorEvent,
+  WindowWithSpeechRecognition,
+} from "../types/speechRecognition.types";
 
 interface AIInputComponentProps {
   onSubmit: (topic: string) => void;
@@ -12,55 +18,6 @@ interface AIInputComponentProps {
   className?: string;
   isAtBottom?: boolean;
   onPositionTransitionComplete?: () => void;
-}
-
-// Type definitions for Web Speech API
-interface SpeechRecognition extends EventTarget {
-  continuous: boolean;
-  interimResults: boolean;
-  lang: string;
-  start(): void;
-  stop(): void;
-  abort(): void;
-  onresult: (event: SpeechRecognitionEvent) => void;
-  onerror: (event: SpeechRecognitionErrorEvent) => void;
-  onend: () => void;
-  onstart: () => void;
-}
-
-interface SpeechRecognitionEvent {
-  resultIndex: number;
-  results: SpeechRecognitionResultList;
-}
-
-interface SpeechRecognitionErrorEvent {
-  error: string;
-  message: string;
-}
-
-interface SpeechRecognitionResultList {
-  length: number;
-  item(index: number): SpeechRecognitionResult;
-  [index: number]: SpeechRecognitionResult;
-}
-
-interface SpeechRecognitionResult {
-  isFinal: boolean;
-  [index: number]: SpeechRecognitionAlternative;
-}
-
-interface SpeechRecognitionAlternative {
-  transcript: string;
-  confidence: number;
-}
-
-interface WindowWithSpeechRecognition extends Window {
-  SpeechRecognition?: {
-    new (): SpeechRecognition;
-  };
-  webkitSpeechRecognition?: {
-    new (): SpeechRecognition;
-  };
 }
 
 export function AIInputComponent({
