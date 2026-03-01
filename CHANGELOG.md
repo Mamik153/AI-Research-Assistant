@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-03-01
+
+### Fix
+- Removed hardcoded production URLs from [api/proxy.js](api/proxy.js) and [vite.config.ts](vite.config.ts) for open-source and self-hosting; defaults are now localhost for development.
+
+### Minor change
+- Self-hosting and backend expectations documented in README (Backend Integration, Self-hosting / Deployment).
+- [API_ENDPOINT_CHANGES.md](API_ENDPOINT_CHANGES.md): added note that CORS/origins are example settings; deployers must configure their own backend CORS and security headers.
+- Default product name in [index.html](index.html) set to "AI Research Assistant" for an unbranded open-source build (deployers can override for their own branding).
+
+---
+
 ## [1.0.0] - 2026-02-04
 
 ### BREAKING CHANGE

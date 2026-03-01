@@ -1,18 +1,20 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import type { ResearchResultProps } from "../types/result.types";
 import { ResearchHero } from "./ResearchHero";
 import { ResearchSummary } from "./ResearchSummary";
 import { KeyInsights } from "./KeyInsights";
 import { PapersGrid } from "@/features/papers";
-import { DiagramViewer } from "@/features/diagrams";
 import { StructuredSectionsGrid } from "./StructuredSectionsGrid";
 import { Download, RefreshCw, Loader2 } from "lucide-react";
-import { downloadResearchPDF } from "@/features/export";
 import { Button } from "@/shared/components/ui/button";
 
 import { Separator } from "@/shared/components/ui/separator";
 import { OverviewCard } from "./OverviewCard";
 import { motion } from "motion/react";
+
+const DiagramViewer = lazy(() =>
+  import("@/features/diagrams").then((m) => ({ default: m.DiagramViewer }))
+);
 
 export const DynamicResearchResult = ({ result }: ResearchResultProps) => {
   const [isDownloading, setIsDownloading] = useState(false);
@@ -102,7 +104,15 @@ export const DynamicResearchResult = ({ result }: ResearchResultProps) => {
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
         >
-          <DiagramViewer diagrams={diagrams} />
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center py-12 text-gray-400">
+                <Loader2 className="w-8 h-8 animate-spin" aria-hidden />
+              </div>
+            }
+          >
+            <DiagramViewer diagrams={diagrams} />
+          </Suspense>
         </motion.div>
       )}
 
@@ -176,6 +186,7 @@ export const DynamicResearchResult = ({ result }: ResearchResultProps) => {
               if (isDownloading) return;
               setIsDownloading(true);
               try {
+                const { downloadResearchPDF } = await import("@/features/export");
                 await downloadResearchPDF(result);
               } catch (err) {
                 console.error("PDF download failed:", err);
