@@ -5,10 +5,12 @@ import type {
     ResearchResult,
     JobStatus,
     ResearchJobResponse,
+    ResearchResultResponse,
     ApiError
 } from '../types/research.types';
-import { submitResearch, pollJobStatus, getResearchResult } from '../services/researchApi';
+import { submitResearch, pollJobStatus, streamJobStatus, getResearchResult } from '../services/researchApi';
 import { parseSummary, buildParsedSummaryFromFlat } from '@/features/results';
+import { config } from '@/shared/config/env';
 
 /**
  * Custom hook to manage research job lifecycle
@@ -118,6 +120,73 @@ export const useResearchJob = (): UseResearchJobReturn => {
         });
     }, []);
 
+    const handleStreamingResult = useCallback((resultResponse: ResearchResultResponse) => {
+        setCurrentJob(prevJob => {
+            if (!prevJob) return null;
+
+            if (resultResponse.report || resultResponse.summary || (resultResponse.papers && resultResponse.papers.length > 0)) {
+                const parsed = parseSummary(resultResponse.summary);
+                const hasFlatStructure =
+                    (resultResponse.key_insights?.length ?? 0) > 0 ||
+                    (resultResponse.generated_diagrams?.length ?? 0) > 0 ||
+                    resultResponse.structured_sections != null;
+                const parsedSummary = parsed ?? (hasFlatStructure
+                    ? buildParsedSummaryFromFlat(
+                        resultResponse.summary,
+                        resultResponse.key_insights,
+                        resultResponse.generated_diagrams,
+                        resultResponse.structured_sections,
+                        resultResponse.section_confidence,
+                        resultResponse.section_images
+                    )
+                    : undefined);
+                const summaryText = parsedSummary?.summary ?? resultResponse.summary;
+                const keyInsights = parsedSummary?.key_insights?.length
+                    ? parsedSummary.key_insights
+                    : resultResponse.key_insights;
+                const generatedDiagrams = parsedSummary?.generated_diagrams?.length
+                    ? parsedSummary.generated_diagrams
+                    : resultResponse.generated_diagrams;
+                const sectionConfidence = parsedSummary?.section_confidence ?? resultResponse.section_confidence;
+                const sectionImages = parsedSummary?.section_images ?? resultResponse.section_images;
+                const researchResult: ResearchResult = {
+                    jobId: resultResponse.jobId || prevJob.jobId || '',
+                    report: resultResponse.report,
+                    summary: summaryText,
+                    parsedSummary: parsedSummary ?? undefined,
+                    papers: resultResponse.papers,
+                    keyInsights,
+                    generatedDiagrams,
+                    completedAt: resultResponse.completed_at || new Date().toISOString(),
+                    topic: prevJob.topic,
+                    sectionConfidence,
+                    sectionImages,
+                };
+
+                setResult(researchResult);
+                setError(null);
+
+                // Mark job as completed successfully
+                return { ...prevJob, status: 'completed' };
+            } else {
+                setError('Research completed but no report was generated');
+                return { ...prevJob, status: 'failed', message: 'Research completed but no report was generated' };
+            }
+        });
+        setIsLoading(false);
+    }, []);
+
+    const handleStreamingFinding = useCallback((finding: string) => {
+        setCurrentJob(prevJob => {
+            if (!prevJob) return null;
+
+            return {
+                ...prevJob,
+                chainOfThought: [...(prevJob.chainOfThought || []), finding],
+            };
+        });
+    }, []);
+
     // Submit a new research job
     const submitResearchJob = useCallback(async (topic: string): Promise<void> => {
         try {
@@ -150,12 +219,28 @@ export const useResearchJob = (): UseResearchJobReturn => {
                 message: jobResponse.message,
                 createdAt: jobResponse.created_at,
                 topic: topic.trim(),
+                chainOfThought: []
             };
 
             setCurrentJob(job);
 
-            // Start polling for status updates
-            pollingControlRef.current = pollJobStatus(jobResponse.job_id, handleStatusUpdate);
+            // Start streaming (or polling as fallback if dynamic is disabled)
+            if (config.useDynamicUI) {
+                const streamControl = streamJobStatus(
+                    jobResponse.job_id,
+                    handleStatusUpdate,
+                    handleStreamingFinding,
+                    handleStreamingResult,
+                    (errorMsg) => {
+                        // On error, fallback to polling
+                        console.warn(`Stream closed or failed (${errorMsg}), falling back to polling...`);
+                        pollingControlRef.current = pollJobStatus(jobResponse.job_id, handleStatusUpdate);
+                    }
+                );
+                pollingControlRef.current = streamControl;
+            } else {
+                pollingControlRef.current = pollJobStatus(jobResponse.job_id, handleStatusUpdate);
+            }
 
         } catch (err) {
             const errorMessage = err && typeof err === 'object' && 'message' in err
@@ -166,7 +251,7 @@ export const useResearchJob = (): UseResearchJobReturn => {
         } finally {
             setIsLoading(false);
         }
-    }, [handleStatusUpdate]);
+    }, [handleStatusUpdate, handleStreamingFinding, handleStreamingResult]);
 
     // Reset job state for new research
     const resetJob = useCallback(() => {

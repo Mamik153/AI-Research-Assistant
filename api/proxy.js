@@ -49,6 +49,19 @@ export default async function handler(req, res) {
       res.setHeader('Content-Type', contentType);
     }
 
+    if (contentType && contentType.includes('text/event-stream')) {
+      // For SSE streaming, we must pipe the body to the client
+      // instead of buffering it with await response.text()
+      res.setHeader('Cache-Control', 'no-cache, no-transform');
+      res.setHeader('Connection', 'keep-alive');
+      
+      const { Readable } = require('stream');
+      if (response.body) {
+         Readable.fromWeb(response.body).pipe(res);
+         return; // Let the stream keep the response open
+      }
+    }
+
     const body = await response.text();
     res.send(body);
   } catch (error) {

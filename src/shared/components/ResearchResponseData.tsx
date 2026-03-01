@@ -32,6 +32,7 @@ export const ResearchResponseData = ({
             <LoadingAnimation
               chainOfThought={currentJob?.chainOfThought}
               topic={currentJob?.topic}
+              message={currentJob?.message}
             />
           ) : null}
           {currentJob.status === "failed" ? (

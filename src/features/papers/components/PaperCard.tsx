@@ -24,11 +24,12 @@ export const PaperCard = ({ paper, index, onReadAbstract }: PaperCardProps) => {
 
   return (
     <Card
-      className="group relative bg-white/5 backdrop-blur-sm shadow-sm transition-all duration-300 h-full rounded-2xl border-gray-300/20 pb-2"
+      className="group relative bg-white/5 backdrop-blur-sm shadow-sm transition-all duration-300 h-full rounded-2xl border-gray-300/20 pb-2 cursor-pointer"
       style={{ animationDelay: `${index * 100}ms` }}
+      onClick={onReadAbstract}
     >
       <CardHeader className="pb-3">
-        <CardTitle className="text-lg text-gray-100 font-bold leading-tight line-clamp-2">
+        <CardTitle className="text-lg text-gray-100 font-bold leading-tight line-clamp-2 group-hover:text-blue-400 transition-colors duration-300">
           {paper.title}
         </CardTitle>
         <CardDescription className="flex flex-wrap gap-y-2 gap-x-4 text-xs text-gray-400 font-medium uppercase tracking-wider pt-2">
@@ -47,13 +48,13 @@ export const PaperCard = ({ paper, index, onReadAbstract }: PaperCardProps) => {
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="pb-3 flex-grow">
-        <p className="text-sm text-gray-500 leading-relaxed line-clamp-3">
+      <CardContent className="pb-3 flex-grow hidden">
+        <p className="text-sm text-gray-500 leading-relaxed line-clamp-1">
           {paper.summary}
         </p>
       </CardContent>
 
-      <CardFooter className="flex items-center justify-between gap-2 p-4 w-[95%] mx-auto border rounded-xl border-gray-300/20 bg-white/5">
+      <CardFooter className="flex items-center justify-between gap-2 p-4 w-[95%] mx-auto border rounded-xl border-gray-300/20 bg-white/5 hidden">
         <Button
           variant="ghost"
           size="sm"

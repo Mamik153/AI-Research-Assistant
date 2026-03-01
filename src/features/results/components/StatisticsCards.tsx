@@ -41,7 +41,7 @@ export const StatisticsCards = ({
             }}
             className="p-4 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 transition shadow-sm"
           >
-            <div className="text-2xl font-bold text-white/90 mb-2">
+            <div className="text-2xl font-bold text-white/90 mb-2 break-words">
               {stat.value}
             </div>
             <div className="text-sm text-gray-400 mt-1">{stat.label}</div>

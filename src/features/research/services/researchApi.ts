@@ -136,6 +136,93 @@ export const getJobStatus = async (jobId: string): Promise<ResearchJobResponse> 
 };
 
 /**
+ * Stream job status and results using Server-Sent Events (SSE)
+ */
+export const streamJobStatus = (
+    jobId: string,
+    onStatusUpdate: (status: ResearchJobResponse) => void,
+    onFinding: (finding: string) => void,
+    onResult: (result: ResearchResultResponse) => void,
+    onErrorFallback: (errorMsg: string) => void
+): { stop: () => void } => {
+    if (!jobId.trim()) {
+        onErrorFallback('Job ID cannot be empty');
+        return { stop: () => { } };
+    }
+
+    const useDynamic = config.useDynamicUI;
+    if (!useDynamic) {
+        // Fallback or handle differently if dynamic UI isn't enabled
+        onErrorFallback('Streaming is only supported for dynamic research');
+        return { stop: () => { } };
+    }
+
+    const endpoint = `${API_BASE_URL}/research/dynamic/${encodeURIComponent(jobId)}/stream`;
+    const eventSource = new EventSource(endpoint);
+
+    eventSource.addEventListener('progress', (e) => {
+        try {
+            const data = JSON.parse(e.data);
+            onStatusUpdate({
+                job_id: jobId,
+                status: 'running',
+                created_at: new Date().toISOString(),
+                message: `[${data.progress_percentage}%] ${data.current_step}: ${data.message}`
+            });
+        } catch (error) {
+            console.error('Error parsing SSE progress:', error);
+        }
+    });
+
+    eventSource.addEventListener('finding', (e) => {
+        try {
+            const data = JSON.parse(e.data);
+            onFinding(data.finding);
+        } catch (error) {
+            console.error('Error parsing SSE finding:', error);
+        }
+    });
+
+    eventSource.addEventListener('result', (e) => {
+        try {
+            const result = JSON.parse(e.data);
+            onResult(result);
+            eventSource.close();
+        } catch (error) {
+            console.error('Error parsing SSE result:', error);
+            onErrorFallback('Failed to parse completed research result');
+        }
+    });
+
+    eventSource.addEventListener('error', (e) => {
+        const eventData = (e as MessageEvent).data;
+        if (eventData) {
+            try {
+                const data = JSON.parse(eventData);
+                console.error("Job SSE error:", data.message);
+                onErrorFallback(data.message || 'Stream connection error');
+            } catch {
+                onErrorFallback('Stream connection error');
+            }
+        } else {
+            // Reconnection try or network error
+            onErrorFallback('Connection to research stream lost, falling back');
+        }
+        eventSource.close();
+    });
+
+    eventSource.addEventListener('done', () => {
+        eventSource.close();
+    });
+
+    return {
+        stop: () => {
+            eventSource.close();
+        }
+    };
+};
+
+/**
  * Poll job status with automatic retry and interval management
  */
 export const pollJobStatus = (
