@@ -1,10 +1,10 @@
-// Vercel Serverless Function — proxies /api/* to the Railway backend
-// and injects the X-API-Key header server-side.
+// Vercel Serverless Function — proxies /api/* to your backend and injects the X-API-Key header server-side.
+// For production: set API_BASE_URL and API_KEY in your Vercel (or equivalent) project environment.
+// Default below is for local development only.
 
 export default async function handler(req, res) {
   const API_BASE_URL =
-    process.env.API_BASE_URL ||
-    'https://ai-research-assistant-backend-production-7c89.up.railway.app';
+    process.env.API_BASE_URL || 'http://localhost:8000';
   const API_KEY = process.env.API_KEY || '';
 
   // `req.url` from Vercel might be `/api/proxy?path=research/dynamic` or just `/api/something` depending on the rewrite.

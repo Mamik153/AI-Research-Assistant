@@ -28,9 +28,9 @@ export const ResearchHero = ({ result }: ResearchHeroProps) => {
               <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
               AI Research Report
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-400 tracking-tight leading-tight">
+            <h2 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-400 tracking-tight leading-tight">
               {result.topic}
-            </h1>
+            </h2>
           </div>
         </div>
 

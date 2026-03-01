@@ -1,6 +1,6 @@
 # API Endpoint Changes (Security Remediation v0.5.0)
 
-This document lists changes to each API endpoint introduced by the security remediation (v0.5.0) and includes request/response examples.
+This document lists changes to each API endpoint introduced by the security remediation (v0.5.0) and includes request/response examples. **Note:** CORS origins and security headers (e.g. `*.slickspender.com`) described below are example production settings; when self-hosting, configure your backend's CORS and security headers for your own domain.
 
 ---
 

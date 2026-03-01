@@ -19,7 +19,7 @@ An AI-powered research assistant that provides comprehensive research reports wi
 
 AI Research Assistant is a modern, feature-rich web application that helps users conduct comprehensive research on any topic. With an intuitive chat-based interface, voice input support, and interactive visualizations, it transforms the research process into an engaging and efficient experience.
 
-This is the **frontend application**. For the backend API, please refer to: *[Backend repository link - to be added]*
+This is the **frontend application**. It expects a compatible backend API. The backend is not included in this repository; you must run your own backend that implements the API contract described in [Backend Integration](#backend-integration) and [API_ENDPOINT_CHANGES.md](API_ENDPOINT_CHANGES.md).
 
 ## Features
 
@@ -87,6 +87,8 @@ pnpm build
 ```
 
 The built files will be in the `dist/` directory.
+
+For production deployment, set `VITE_APP_URL` to your live site origin (e.g. `https://slickresearch.example.com`) so that canonical URLs, Open Graph tags, and `robots.txt`/`sitemap.xml` use the correct base URL for SEO.
 
 ### Preview Production Build
 
@@ -228,21 +230,35 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 ## Backend Integration
 
-This frontend application is designed to work with a backend API. The backend repository provides:
+This frontend is designed to work with a backend API that provides research processing, job status, and result storage. **The backend is not included in this repo.** You need to run (or host) a compatible backend and configure this app to point at it via environment variables.
 
-- Research processing endpoints
-- Job status management
-- Result storage and retrieval
+### Expected API contract
 
-**Backend Repository**: *[To be added - link to backend repo]*
-
-### API Endpoints (Expected)
+Your backend should expose at least:
 
 ```
 POST   /api/research              # Submit research topic
 GET    /api/research/{job_id}     # Check job status
 GET    /api/research/{job_id}/result  # Retrieve results
 ```
+
+For full request/response shapes, authentication (API key via `X-API-Key` or `Authorization: Bearer`), validation, and security headers, see [API_ENDPOINT_CHANGES.md](API_ENDPOINT_CHANGES.md).
+
+### Self-hosting / Deployment
+
+When deploying your own instance:
+
+1. **Frontend**  
+   Set `VITE_APP_URL` to your public site origin (e.g. `https://research.example.com`) so canonical URLs, Open Graph tags, `robots.txt`, and `sitemap.xml` use the correct base URL. Copy [.env.example](.env.example) to `.env` and configure as needed.
+
+2. **BFF / proxy**  
+   - **Node (recommended for self-hosted)**: Use [server.js](server.js). Set `PORT`, `API_BASE_URL` (your backend URL), and `API_KEY` in the environment. Run with `pnpm build` then `pnpm start`.  
+   - **Vercel**: The [api/proxy.js](api/proxy.js) serverless function proxies `/api` and `/static` to your backend. Set `API_BASE_URL` and `API_KEY` in your Vercel project environment; there is no default production URL in code.
+
+3. **Backend**  
+   Run a backend that implements the endpoints described above and in [API_ENDPOINT_CHANGES.md](API_ENDPOINT_CHANGES.md). Configure CORS and security headers for your frontend origin.
+
+You can customize the product name and meta tags in [index.html](index.html) for your own branding.
 
 ## Roadmap
 
@@ -282,7 +298,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Issues**: [GitHub Issues](https://github.com/Mamik153/AI-Research-Assistant/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/Mamik153/AI-Research-Assistant/discussions)
-- **Documentation**: Check the `/docs` folder for detailed guides
+- **Documentation**: See the `/docs` folder for additional planning and reference docs (e.g. [Folder structure refactor plan](docs/folder-structure-refactor-plan.md)).
 
 ---
 

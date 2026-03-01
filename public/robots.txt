@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /static/
+
+Sitemap: __VITE_APP_URL__/sitemap.xml

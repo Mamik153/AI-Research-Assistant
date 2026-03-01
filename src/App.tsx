@@ -44,6 +44,14 @@ function App() {
   return (
     <ErrorBoundary>
       <div className="h-screen w-full overflow-hidden relative app bg-[#09090b] text-gray-200">
+        {/* Skip to main content - visible on focus for keyboard/screen reader users */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:z-[100] focus:p-4 focus:bg-white focus:text-gray-900 focus:font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          Skip to main content
+        </a>
+
         {/* Animated AI Background Blobs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
           <div
@@ -71,40 +79,43 @@ function App() {
           <div className="flex items-center gap-2 max-w-3xl mx-auto w-full">
             <img
               src="/logo1.png"
-              alt="Logo"
+              alt="SlickResearch logo"
               className="h-8 w-auto object-contain rounded-full"
             />
-            <p className="font-semibold text-white/90 tracking-wide">
+            <h1 className="font-semibold text-white/90 tracking-wide text-xl">
               SlickResearch
-            </p>
+            </h1>
           </div>
         </header>
 
-        {/* Chat Container */}
-        <div
-          className="absolute top-0 left-0 right-0 z-10"
-          style={{ bottom: chatMessages.length === 0 ? "120px" : "0" }}
-        >
-          <ChatContainer
-            topic={currentJob?.topic}
-            isTransitioning={isTransitioning}
-            messages={chatMessages}
-            isVisible={layoutMode === "chat"}
-            className="h-full"
-          />
-        </div>
+        {/* Main content: chat and input */}
+        <main id="main-content" className="contents" aria-label="Main content">
+          {/* Chat Container */}
+          <div
+            className="absolute top-0 left-0 right-0 z-10"
+            style={{ bottom: chatMessages.length === 0 ? "120px" : "0" }}
+          >
+            <ChatContainer
+              topic={currentJob?.topic}
+              isTransitioning={isTransitioning}
+              messages={chatMessages}
+              isVisible={layoutMode === "chat"}
+              className="h-full"
+            />
+          </div>
 
-        {/* AI Input Component - only visible on initial load and after "Try New Research" */}
-        {!currentJob && !result && (
-          <AIInputComponent
-            onSubmit={handleSubmit}
-            placeholder="Enter a topic to research"
-            disabled={isLoading}
-            isAtBottom={layoutMode === "chat"}
-            onPositionTransitionComplete={handlePositionTransitionComplete}
-            isLoading={isLoading}
-          />
-        )}
+          {/* AI Input Component - only visible on initial load and after "Try New Research" */}
+          {!currentJob && !result && (
+            <AIInputComponent
+              onSubmit={handleSubmit}
+              placeholder="Enter a topic to research"
+              disabled={isLoading}
+              isAtBottom={layoutMode === "chat"}
+              onPositionTransitionComplete={handlePositionTransitionComplete}
+              isLoading={isLoading}
+            />
+          )}
+        </main>
         <Toaster theme="dark" position="bottom-right" richColors />
       </div>
     </ErrorBoundary>

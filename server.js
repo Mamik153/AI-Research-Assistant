@@ -30,8 +30,19 @@ const proxyOptions = {
 app.use('/api', createProxyMiddleware(proxyOptions));
 app.use('/static', createProxyMiddleware(proxyOptions));
 
-// Serve the built frontend
-app.use(express.static(path.join(__dirname, 'dist')));
+// Serve the built frontend with cache headers: short cache for HTML, long for hashed assets
+app.use(
+  express.static(path.join(__dirname, 'dist'), {
+    setHeaders: (res, filePath) => {
+      const normalized = path.normalize(filePath);
+      if (normalized.endsWith('index.html')) {
+        res.setHeader('Cache-Control', 'no-cache, max-age=0');
+      } else if (normalized.includes(`${path.sep}assets${path.sep}`)) {
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+      }
+    },
+  })
+);
 
 // SPA fallback — serve index.html for all non-API routes
 app.get('*', (_req, res) => {
