@@ -100,8 +100,8 @@ export function ArchitectureIllustration() {
             // Outside (Right/Top):
             { d: "M 26.2 22.3 L 46.6 22.5 L 46.5 45.3" },
             // FastAPI <-> Page Index
-            { d: "M 45.8 47.5 L 56.2 47.5 L 56.2 69.3 L 72.1 69.3" },
-            { d: "M 72.1 71.3 L 57.7 71.3 L 57.7 49.5 L 45.8 49.5" },
+            { d: "M 45.8 44.3 L 56.2 44.4 L 56.2 69.3 L 72.1 69.3" },
+            { d: "M 72.1 71.3 L 57.7 71.3 L 57.7 46.4 L 45.8 46.5" },
           ].map(({ d }, i) => (
             <g key={`path-${i}`}>
               <path

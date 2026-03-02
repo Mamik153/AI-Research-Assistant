@@ -403,7 +403,7 @@ export function WhyBetterSection() {
         </div>
 
         {/* Scroll Progress Indicators */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-30">
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-30 hidden">
           {differentiators.map((_, i) => (
             <div
               key={i}
