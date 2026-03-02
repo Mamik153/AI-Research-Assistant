@@ -1,5 +1,14 @@
 import { motion } from "motion/react";
 
+interface IsoPillarProps {
+  height: number;
+  color: string;
+  maxH?: number;
+  label: string;
+  subLabel: string;
+  delay: number;
+}
+
 const IsoPillar = ({
   height,
   color,
@@ -7,7 +16,7 @@ const IsoPillar = ({
   label,
   subLabel,
   delay,
-}: any) => {
+}: IsoPillarProps) => {
   return (
     <motion.div
       className="flex flex-col items-center relative z-20"

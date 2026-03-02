@@ -41,11 +41,6 @@ export function HeroSection() {
       <div className="w-full mt-8 flex-grow">
         <ArchitectureIllustration />
       </div>
-
-      <div
-        className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.03)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_60%_at_50%_10%,#000_60%,transparent_110%)] pointer-events-none"
-        aria-hidden
-      />
     </section>
   );
 }

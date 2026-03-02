@@ -1,27 +1,33 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { User } from "lucide-react";
-import {
-  SiReact,
-  SiFastapi,
-  SiSupabase,
-  SiPython,
-  SiOllama,
-  SiOpenai,
-  SiGooglegemini,
-  SiClaude,
-} from "react-icons/si";
 
 const AGENTS = [
-  { id: "ollama", icon: SiOllama, name: "Ollama", color: "text-white" },
+  {
+    id: "ollama",
+    iconUrl: "https://cdn.simpleicons.org/ollama/white",
+    name: "Ollama",
+    color: "text-white",
+  },
   {
     id: "gemini",
-    icon: SiGooglegemini,
+    iconUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/8/8a/Google_Gemini_logo.svg",
     name: "Gemini",
-    color: "text-blue-400",
+    color: "",
   },
-  { id: "openai", icon: SiOpenai, name: "OpenAI", color: "text-emerald-400" },
-  { id: "claude", icon: SiClaude, name: "Claude", color: "text-orange-400" },
+  {
+    id: "openai",
+    iconUrl: "https://cdn.simpleicons.org/openai/white",
+    name: "OpenAI",
+    color: "text-emerald-400",
+  },
+  {
+    id: "claude",
+    iconUrl: "https://cdn.simpleicons.org/anthropic/D97757",
+    name: "Claude",
+    color: "text-orange-400",
+  },
 ];
 
 export function ArchitectureIllustration() {
@@ -34,7 +40,6 @@ export function ArchitectureIllustration() {
     return () => clearInterval(interval);
   }, []);
 
-  const CurrentAgentIcon = AGENTS[currentAgentIndex].icon;
   const currentAgent = AGENTS[currentAgentIndex];
 
   return (
@@ -97,6 +102,9 @@ export function ArchitectureIllustration() {
             { d: "M 361 272 L 362 146 L 210 147" },
             // Outside (Right/Top):
             { d: "M 210 134 L 373 135 L 372 272" },
+            // FastAPI <-> Page Index
+            { d: "M 367 285 L 450 285 L 450 416 L 577 416" },
+            { d: "M 577 428 L 462 428 L 462 297 L 367 297" },
           ].map(({ d }, i) => (
             <g key={`path-${i}`}>
               <path
@@ -157,7 +165,11 @@ export function ArchitectureIllustration() {
         >
           <div className="w-16 h-16 bg-[#0A0A0B] border border-white/10 rounded-2xl flex items-center justify-center shadow-[0_0_30px_rgba(97,218,251,0.15)] relative overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-br from-[#61DAFB]/10 to-transparent opacity-50" />
-            <SiReact className="w-8 h-8 text-[#61DAFB]" />
+            <img
+              src="https://cdn.simpleicons.org/react/61DAFB"
+              alt="React"
+              className="w-8 h-8 object-contain"
+            />
           </div>
           <div className="px-4 py-1.5 bg-[#0A0A0B] border border-white/10 rounded-full shadow-xl">
             <span className="text-xs font-semibold text-white/90">React</span>
@@ -178,7 +190,11 @@ export function ArchitectureIllustration() {
         >
           <div className="w-16 h-16 bg-[#0A0A0B] border border-white/10 rounded-2xl flex items-center justify-center shadow-[0_0_30px_rgba(0,150,136,0.15)] relative overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-br from-[#009688]/10 to-transparent opacity-50" />
-            <SiFastapi className="w-8 h-8 text-[#009688]" />
+            <img
+              src="https://cdn.simpleicons.org/fastapi/009688"
+              alt="FastAPI"
+              className="w-8 h-8 object-contain"
+            />
           </div>
           <div className="px-4 py-1.5 bg-[#0A0A0B] border border-white/10 rounded-full shadow-xl">
             <span className="text-xs font-semibold text-white/90">
@@ -204,7 +220,11 @@ export function ArchitectureIllustration() {
 
             <div className="flex flex-col items-center gap-2 relative z-10 w-16">
               <div className="w-12 h-12 bg-black/60 border border-white/5 rounded-xl flex items-center justify-center shadow-inner">
-                <SiPython className="w-6 h-6 text-[#3776AB]" />
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg"
+                  alt="Python"
+                  className="w-6 h-6 object-contain"
+                />
               </div>
               <span className="text-[9px] font-medium text-slate-400">
                 Python
@@ -222,8 +242,10 @@ export function ArchitectureIllustration() {
                     transition={{ duration: 0.4, ease: "backOut" }}
                     className="absolute inset-0 flex items-center justify-center"
                   >
-                    <CurrentAgentIcon
-                      className={`w-6 h-6 ${currentAgent.color}`}
+                    <img
+                      src={currentAgent.iconUrl}
+                      alt={currentAgent.name}
+                      className="w-6 h-6 object-contain"
                     />
                   </motion.div>
                 </AnimatePresence>
@@ -266,12 +288,50 @@ export function ArchitectureIllustration() {
         >
           <div className="w-16 h-16 bg-[#0A0A0B] border border-white/10 rounded-2xl flex items-center justify-center shadow-[0_0_30px_rgba(62,207,142,0.15)] relative overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-br from-[#3ECF8E]/10 to-transparent opacity-50" />
-            <SiSupabase className="w-8 h-8 text-[#3ECF8E]" />
+            <img
+              src="https://cdn.simpleicons.org/supabase/3ECF8E"
+              alt="Supabase"
+              className="w-8 h-8 object-contain"
+            />
           </div>
           <div className="px-4 py-1.5 bg-[#0A0A0B] border border-white/10 rounded-full shadow-xl">
             <span className="text-xs font-semibold text-white/90">
               Supabase DB
             </span>
+          </div>
+        </motion.div>
+
+        {/* 6. Page Index Vectorless RAG */}
+        <motion.div
+          className="absolute left-[545px] top-[410px] flex flex-col items-center gap-3 transform-gpu"
+          style={{ transform: "translateZ(30px)" }}
+          animate={{ z: [30, 40, 30] }}
+          transition={{
+            duration: 4.8,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1.2,
+          }}
+        >
+          <div className="w-16 h-16 bg-[#0A0A0B] border border-white/10 rounded-2xl flex items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.1)] relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-50" />
+            <img
+              src="https://pageindex.ai/static/images/logo.png"
+              alt="Page Index"
+              className="w-10 h-10 object-contain rounded-lg"
+            />
+          </div>
+          <div className="flex flex-col items-center gap-1">
+            <div className="px-4 py-1.5 bg-[#0A0A0B] border border-white/10 rounded-full shadow-xl">
+              <span className="text-xs font-semibold text-white/90">
+                Page Index
+              </span>
+            </div>
+            <div className="px-2 py-0.5 bg-[#0A0A0B] border border-dashed border-white/30 rounded-md">
+              <span className="text-[10px] font-medium text-white/60">
+                Optional
+              </span>
+            </div>
           </div>
         </motion.div>
       </motion.div>
