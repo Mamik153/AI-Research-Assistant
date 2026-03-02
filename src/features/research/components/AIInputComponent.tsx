@@ -271,11 +271,11 @@ export function AIInputComponent({
     }
 
     if (isAtBottom) {
-      // Bottom position for chat mode - responsive padding
+      // Bottom position for chat mode - safe-area aware
       return {
         position: "fixed" as const,
         left: "50%",
-        bottom: "16px",
+        bottom: "calc(16px + var(--safe-area-inset-bottom))",
         transform: "translateX(-50%)",
         transition: "all 500ms cubic-bezier(0.4, 0, 0.2, 1)",
       };
@@ -294,7 +294,7 @@ export function AIInputComponent({
   return (
     <div
       ref={containerRef}
-      className="w-[90%] z-10  sm:w-[80%] md:w-full max-w-sm md:max-w-2xl"
+      className="w-[90%] sm:w-[80%] md:w-full max-w-[calc(100vw-2rem)] md:max-w-2xl z-10"
       style={{
         ...getPositionStyles(),
         willChange: isAtBottom ? "auto" : "transform, opacity",

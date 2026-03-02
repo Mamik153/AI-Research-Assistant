@@ -75,7 +75,7 @@ function App() {
         </div>
 
         {/* Header */}
-        <header className="absolute top-0 left-0 right-0 z-50 p-6 flex items-center pointer-events-none w-full bg-white/5 backdrop-blur-md">
+        <header className="absolute top-0 left-0 right-0 z-50 flex items-center pointer-events-none w-full bg-white/5 backdrop-blur-md pt-[calc(1.5rem+var(--safe-area-inset-top))] pb-6 px-4 sm:px-6">
           <div className="flex items-center gap-2 max-w-3xl mx-auto w-full">
             <img
               src="/logo1.png"
@@ -93,7 +93,10 @@ function App() {
           {/* Chat Container */}
           <div
             className="absolute top-0 left-0 right-0 z-10"
-            style={{ bottom: chatMessages.length === 0 ? "120px" : "0" }}
+            style={{
+              bottom:
+                chatMessages.length === 0 ? "var(--input-bar-offset)" : "0",
+            }}
           >
             <ChatContainer
               topic={currentJob?.topic}
@@ -116,7 +119,15 @@ function App() {
             />
           )}
         </main>
-        <Toaster theme="dark" position="bottom-right" richColors />
+        <Toaster
+          theme="dark"
+          position="bottom-right"
+          richColors
+          offset={{
+            bottom: "var(--input-bar-offset)",
+            right: "max(1rem, var(--safe-area-inset-right))",
+          }}
+        />
       </div>
     </ErrorBoundary>
   );

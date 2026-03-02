@@ -23,7 +23,7 @@ export const MethodologiesSection = ({
       transition={{ duration: 0.4, delay: 0.3 }}
       className="w-full mb-8"
     >
-      <h3 className="text-xl font-semibold bg-gradient-to-r from-gray-100 to-gray-400 bg-clip-text text-transparent mb-4 flex items-center gap-2">
+      <h3 className="text-xl font-semibold bg-gradient-to-r from-gray-100 to-gray-400 bg-clip-text text-transparent mb-4 flex items-center gap-2 min-w-0 break-words">
         Methodologies
       </h3>
       <SectionMedia confidence={confidence} images={images} />

@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2] - 2026-03-02
+
+### Fix
+- Fixed mobile right-side content cutoff by removing redundant `px-4` from `PapersGrid` (triple-stacked padding left only ~284px on 390px screens).
+- Fixed conflicting Tailwind text-size classes in `KeyConceptsNetwork` (`text-lg` was silently overriding `text-sm` and `text-xs`, making concept cards ~28–50% wider than intended).
+- Added `overflow-x-hidden` to `DynamicResearchResult` outermost wrapper to prevent any overflowing child from bleeding past the result container on mobile.
+- Changed `overflow: hidden` to `overflow-x: clip` on `.research-result` in `ResearchResult.css` so code blocks inside can scroll horizontally instead of being silently clipped.
+- Added `overflow-x-hidden` containment at every critical boundary: `ChatContainer` inner wrapper, `ChatMessage` outer wrapper, and `ResearchResponseData` root div — ensuring no child element can bleed past the right viewport edge regardless of where the overflow originates.
+- Removed `max-w-[95%]` centering constraint from `ChatMessage` assistant wrapper; replaced with `w-full` so the result takes the full available column width and is properly contained by the `overflow-x-hidden` ancestors.
+- Removed mobile `px-4` from `SectionMedia` image carousel wrapper (was stacking extra 32px of horizontal padding on top of the already-padded result container).
+
+---
+
 ## [1.0.1] - 2026-03-01
 
 ### Fix

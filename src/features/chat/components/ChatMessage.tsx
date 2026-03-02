@@ -29,8 +29,8 @@ export const ChatMessage = memo(function ChatMessage({
         className="flex justify-end mb-3 sm:mb-4 hidden"
       >
         <div className="flex flex-col items-end max-w-[95%] sm:max-w-[85%] md:max-w-[70%]">
-          <div className="bg-blue-500 text-white rounded-2xl rounded-tr-sm px-3 py-2 sm:px-4 shadow-sm">
-            <p className="text-sm sm:text-base">{message.content}</p>
+          <div className="bg-blue-500 text-white rounded-2xl rounded-tr-sm px-3 py-2 sm:px-4 shadow-sm break-words">
+            <p className="text-sm sm:text-base break-words">{message.content}</p>
           </div>
           <span className="text-xs text-gray-400 mt-1">
             {formatTimestamp(message.timestamp)}
@@ -48,8 +48,8 @@ export const ChatMessage = memo(function ChatMessage({
       transition={{ duration: 0.3, ease: "easeOut", delay: 0.05 }}
       className="flex justify-start mb-3 sm:mb-4"
     >
-      <div className="flex flex-col items-start max-w-[95%] sm:max-w-[90%] md:max-w-[85%] w-full mx-auto">
-        <div className="w-full overflow-hidden mx-auto">
+      <div className="flex flex-col items-start w-full min-w-0 overflow-x-hidden">
+        <div className="w-full overflow-x-hidden min-w-0 break-words">
           <ResearchResponseData
             isVisible={true}
             currentJob={message.researchJob || null}
