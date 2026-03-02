@@ -2,6 +2,8 @@
 // For production: set API_BASE_URL and API_KEY in your Vercel (or equivalent) project environment.
 // Default below is for local development only.
 
+import { Readable } from 'stream';
+
 export default async function handler(req, res) {
   const API_BASE_URL =
     process.env.API_BASE_URL || 'http://localhost:8000';
@@ -55,7 +57,6 @@ export default async function handler(req, res) {
       res.setHeader('Cache-Control', 'no-cache, no-transform');
       res.setHeader('Connection', 'keep-alive');
       
-      const { Readable } = require('stream');
       if (response.body) {
          Readable.fromWeb(response.body).pipe(res);
          return; // Let the stream keep the response open
