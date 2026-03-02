@@ -59,6 +59,20 @@
   --md-surface-variant: #e3e7ee;
   --md-outline: #c7cdd8;
   --md-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+
+  /* Safe-area and layout tokens for responsive cross-platform UI */
+  --safe-area-inset-top: env(safe-area-inset-top, 0px);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-inset-left: env(safe-area-inset-left, 0px);
+  --safe-area-inset-right: env(safe-area-inset-right, 0px);
+  --app-header-height: 3.5rem;
+  --input-bar-offset: calc(7.5rem + var(--safe-area-inset-bottom));
+}
+
+@media (max-width: 640px) {
+  :root {
+    --input-bar-offset: calc(5rem + var(--safe-area-inset-bottom));
+  }
 }
 
 @theme inline {
@@ -118,6 +132,17 @@
   }
 
   body {
-    @apply bg-background text-foreground h-screen overflow-hidden;
+    @apply bg-background text-foreground h-screen overflow-hidden overflow-x-hidden;
   }
+
+  #root {
+    @apply overflow-x-hidden;
+  }
+}
+
+/* Radix ScrollArea: prevent inner table wrapper from expanding past viewport (fixes mobile right-side cutoff) */
+[data-slot="scroll-area-viewport"] > div {
+  display: block !important;
+  width: 100%;
+  min-width: 0;
 }

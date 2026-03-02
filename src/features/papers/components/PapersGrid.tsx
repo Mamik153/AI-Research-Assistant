@@ -36,7 +36,7 @@ export const PapersGrid = ({ papers }: PapersGridProps) => {
   if (!papers || papers.length === 0) return null;
 
   return (
-    <div className="w-full mb-12 px-4 lg:px-0">
+    <div className="w-full mb-12 min-w-0">
       <h3 className="text-2xl font-semibold bg-gradient-to-r from-gray-100 to-gray-400 bg-clip-text text-transparent mb-4 flex items-center gap-2">
         References & Source Papers
       </h3>
@@ -45,13 +45,13 @@ export const PapersGrid = ({ papers }: PapersGridProps) => {
         opts={{
           align: "start",
         }}
-        className="w-full"
+        className="w-full min-w-0"
       >
-        <CarouselContent className="-ml-4">
+        <CarouselContent className="-ml-4 min-w-0">
           {papers.map((paper, idx) => (
             <CarouselItem
               key={idx}
-              className="pl-4 basis-full md:basis-1/2 lg:basis-1/3"
+              className="pl-4 basis-full md:basis-1/2 lg:basis-1/3 min-w-0"
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}

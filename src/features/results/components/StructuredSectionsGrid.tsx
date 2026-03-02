@@ -47,7 +47,7 @@ export const StructuredSectionsGrid = memo(
     if (!hasAny) return null;
 
     return (
-      <div className="grid grid-cols-1 gap-8">
+      <div className="grid grid-cols-1 gap-8 min-w-0">
         {/* {hasOverview && sections.overview && <OverviewCard overview={sections.overview} />} */}
         {hasKeyConcepts && (
           <KeyConceptsNetwork

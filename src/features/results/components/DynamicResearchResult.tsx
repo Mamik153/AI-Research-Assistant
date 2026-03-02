@@ -59,7 +59,7 @@ export const DynamicResearchResult = ({ result }: ResearchResultProps) => {
   const hasPapers = result.papers && result.papers.length > 0;
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-[calc(5rem+var(--safe-area-inset-bottom))] relative min-w-0 overflow-x-hidden">
       {/* Hero Section */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -158,8 +158,11 @@ export const DynamicResearchResult = ({ result }: ResearchResultProps) => {
           <PapersGrid papers={result.papers!} />
         </motion.div>
       )}
-      {/* Actions Footer */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 z-50">
+      {/* Actions Footer - safe-area aware */}
+      <div
+        className="absolute left-1/2 -translate-x-1/2 z-50"
+        style={{ bottom: "var(--safe-area-inset-bottom)" }}
+      >
         <motion.div
           className="bg-gray-900/80 backdrop-blur-xl border border-gray-700/50 text-white rounded-full px-2 py-2 shadow-2xl flex items-center gap-2"
           initial={{ opacity: 0, y: 20 }}

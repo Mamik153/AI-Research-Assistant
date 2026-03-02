@@ -24,7 +24,7 @@ export const ResearchResponseData = ({
   // console.log(currentJob);
 
   return (
-    <div className="w-full relative text-white mt-20">
+    <div className="w-full min-w-0 overflow-x-hidden relative text-white mt-20">
       {currentJob && (
         <div className="space-y-4">
           {currentJob.status !== "completed" &&

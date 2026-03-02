@@ -45,9 +45,9 @@ export function ChatContainer({
       transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}
       className={`h-full ${className}`}
     >
-      <ScrollArea className="h-full px-3 py-4 sm:px-4 sm:py-6 sm:pb-0">
+      <ScrollArea className="h-full px-3 py-4 sm:px-4 sm:py-6 pb-[var(--input-bar-offset)]">
         {messages.length === 0 ? null : (
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-4xl mx-auto min-w-0 w-full overflow-x-hidden">
             {messages.map((message, index) => (
               <ChatMessage
                 key={message.id}

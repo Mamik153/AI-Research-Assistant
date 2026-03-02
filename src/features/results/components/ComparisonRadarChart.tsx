@@ -137,7 +137,7 @@ export const ComparisonRadarChart = memo(
         className="w-full mb-8"
       >
         <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-          <h3 className="text-xl font-semibold bg-gradient-to-r from-gray-100 to-gray-400 bg-clip-text text-transparent flex items-center gap-2">
+          <h3 className="text-xl font-semibold bg-gradient-to-r from-gray-100 to-gray-400 bg-clip-text text-transparent flex items-center gap-2 min-w-0 break-words">
             Comparison
           </h3>
           <div className="section-media my-4 space-y-4">

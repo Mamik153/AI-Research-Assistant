@@ -49,27 +49,27 @@ export const BenefitsRisksDisplay = ({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.2 }}
-      className="mb-8"
+      className="mb-8 min-w-0 w-full"
     >
-      <h3 className="text-xl font-semibold bg-gradient-to-r from-gray-100 to-gray-400 bg-clip-text text-transparent mb-4 flex items-center gap-2">
+      <h3 className="text-xl font-semibold bg-gradient-to-r from-gray-100 to-gray-400 bg-clip-text text-transparent mb-4 flex items-center gap-2 break-words min-w-0">
         Benefits & Risks
       </h3>
       <SectionMedia confidence={confidence} images={images} />
 
-      <div className="grid gap-8">
+      <div className="grid gap-8 min-w-0">
         {hasBenefits && (
-          <div className="rounded-2xl transition group h-max">
-            <h3 className="text-lg font-semibold bg-gradient-to-r from-gray-100 to-gray-400 bg-clip-text text-transparent mb-4 flex items-center gap-2">
+          <div className="rounded-2xl transition group h-max min-w-0">
+            <h3 className="text-lg font-semibold bg-gradient-to-r from-gray-100 to-gray-400 bg-clip-text text-transparent mb-4 flex items-center gap-2 break-words min-w-0">
               Benefits
             </h3>
             <div className="space-y-4">
               {benefits.map((item, idx) => (
                 <div
                   key={idx}
-                  className="p-4 rounded-xl bg-emerald-500/5 backdrop-blur-md border border-emerald-500/20 hover:bg-emerald-500/10 hover:border-emerald-500/30 transition"
+                  className="p-4 rounded-xl bg-emerald-500/5 backdrop-blur-md border border-emerald-500/20 hover:bg-emerald-500/10 hover:border-emerald-500/30 transition min-w-0"
                 >
-                  <div className="flex items-start justify-between gap-2 mb-1">
-                    <span className="font-medium text-white/90 text-lg">
+                  <div className="flex items-start justify-between gap-2 mb-1 min-w-0">
+                    <span className="font-medium text-white/90 text-lg break-words min-w-0">
                       {item.title}
                     </span>
                     {item.importance && (
@@ -80,7 +80,7 @@ export const BenefitsRisksDisplay = ({
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-emerald-100/70">
+                  <p className="text-sm text-emerald-100/70 break-words">
                     {item.description}
                   </p>
                 </div>
@@ -89,18 +89,18 @@ export const BenefitsRisksDisplay = ({
           </div>
         )}
         {hasRisks && (
-          <div className="rounded-2xl h-max transition group">
-            <h3 className="text-lg font-semibold bg-gradient-to-r from-gray-100 to-gray-400 bg-clip-text text-transparent mb-4 flex items-center gap-2">
+          <div className="rounded-2xl h-max transition group min-w-0">
+            <h3 className="text-lg font-semibold bg-gradient-to-r from-gray-100 to-gray-400 bg-clip-text text-transparent mb-4 flex items-center gap-2 break-words min-w-0">
               Risks
             </h3>
             <div className="space-y-4">
               {risks.map((item, idx) => (
                 <div
                   key={idx}
-                  className="p-4 rounded-xl bg-red-500/5 backdrop-blur-md border border-red-500/20 hover:bg-red-500/10 hover:border-red-500/30 transition"
+                  className="p-4 rounded-xl bg-red-500/5 backdrop-blur-md border border-red-500/20 hover:bg-red-500/10 hover:border-red-500/30 transition min-w-0"
                 >
-                  <div className="flex items-start justify-between gap-2 mb-1">
-                    <span className="font-medium text-white/90 text-lg">
+                  <div className="flex items-start justify-between gap-2 mb-1 min-w-0">
+                    <span className="font-medium text-white/90 text-lg break-words min-w-0">
                       {item.title}
                     </span>
                     {item.severity && (
@@ -111,7 +111,7 @@ export const BenefitsRisksDisplay = ({
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-red-100/70">{item.description}</p>
+                  <p className="text-sm text-red-100/70 break-words">{item.description}</p>
                 </div>
               ))}
             </div>

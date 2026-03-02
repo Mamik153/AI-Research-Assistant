@@ -56,7 +56,7 @@ export const SectionMedia: React.FC<SectionMediaProps> = ({
       )}
 
       {images && images.length > 1 && (
-        <div className="px-4 md:px-12">
+        <div className="md:px-12">
           <Carousel className="w-full">
             <CarouselContent>
               {images.map((imgUrl, index) => (
