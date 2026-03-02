@@ -17,6 +17,7 @@ export * from './ui/tabs';
 export * from './icons';
 
 // Other shared components
+export { AppHeader } from './AppHeader';
 export { ErrorBoundary } from './ErrorBoundary';
 export { LoadingAnimation } from './LoadingAnimation';
 export { AbstractModal } from './AbstractModal';
