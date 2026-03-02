@@ -132,16 +132,16 @@
   }
 
   body {
-    @apply bg-background text-foreground min-h-screen overflow-x-hidden;
+    @apply bg-background text-foreground min-h-screen;
   }
 
   #root {
-    @apply overflow-x-hidden;
+    @apply w-full;
   }
 }
 
 /* Radix ScrollArea: prevent inner table wrapper from expanding past viewport (fixes mobile right-side cutoff) */
-[data-slot="scroll-area-viewport"] > div {
+[data-slot="scroll-area-viewport"]>div {
   display: block !important;
   width: 100%;
   min-width: 0;
